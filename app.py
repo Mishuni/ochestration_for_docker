@@ -20,6 +20,7 @@ def before_request():
 
 @app.route('/')
 def index():
+    print(os.system('docker -H 192.168.0.62:2376 ps -a'))
     return render_template('index.html')
 
 @socketio.on('connect', namespace='/mynamespace')
@@ -36,4 +37,4 @@ def reqeust(message):
     emit('response',{'data':message['data'], 'username':session['username']},broadcast=True)
 
 if __name__ == '__main__':
-    socketio.run(app)
+    socketio.run(app, host="0.0.0.0", port="5000")
