@@ -58,12 +58,20 @@ def handle_unsubscribe_all():
     mqtt.unsubscribe_all()
 
 
+from flask import request
+from flask import jsonify
+
+@app.route("/get_my_ip", methods=["GET"])
+def get_my_ip():
+    return jsonify({'ip': request.remote_addr}), 200
+
 @mqtt.on_message()
 def handle_mqtt_message(client, userdata, message):
     original = message.payload.decode()
     print(original)
     data2 = ""
     ipAddr = message.topic
+    
     if(original == "status"):
         cmd = ['docker','-H',ipAddr,'ps','-a'] 
         fd_popen = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout 
