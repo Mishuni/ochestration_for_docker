@@ -3,6 +3,8 @@
 A small Test application to show how to use Flask-MQTT.
 
 """
+import os
+import subprocess
 
 import eventlet
 import json
@@ -36,7 +38,7 @@ bootstrap = Bootstrap(app)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('mqttindex.html')
 
 
 @socketio.on('publish')
@@ -58,10 +60,23 @@ def handle_unsubscribe_all():
 
 @mqtt.on_message()
 def handle_mqtt_message(client, userdata, message):
+    original = message.payload.decode()
+    print(original)
+    data2 = ""
+    ipAddr = message.topic
+    if(original == "status"):
+        cmd = ['docker','-H',ipAddr,'ps','-a'] 
+        fd_popen = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout 
+        data2 = fd_popen.read().strip() 
+        fd_popen.close() 
+    print(message.topic)
+
     data = dict(
         topic=message.topic,
-        payload=message.payload.decode()
+        payload=str(data2)
     )
+   
+    # print(os.system('docker -H 192.168.0.62:2376 ps -a'))
     socketio.emit('mqtt_message', data=data)
 
 
