@@ -9,21 +9,78 @@
 {{ super() }}
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
 <script type="text/javascript" charset="utf-8">
-  $(document).ready(function() {
+
+function changeSelect(){
+    //var langSelect = document.getElementById("id-lang");
+    var deviceList = $('#qos');
+    var topic = $('#topic');
+    var sub_topic = $('#subscribe_topic');
+    var selectVal = $('#qos option:selected').val();
+    
+    topic.val(selectVal);
+    sub_topic.val(selectVal);
+    //console.log(selectVal);
+}
+$(document).ready(function() {
     var socket = io.connect('http://' + document.domain + ':' + location.port);
+    let httpRequest;
+    //intervalReq = setInterval(getList,2000);
+    getList();
+
+    function getList(){
+        httpRequest = new XMLHttpRequest();
+        httpRequest.onreadystatechange = printList;
+        if(!httpRequest){
+            console.log("Can't make XMLHTTP instance");
+            return false;
+        }
+
+        httpRequest.open('GET','devices');
+        httpRequest.send();
+    }
+
+    function printList(){
+        try{
+
+            if(httpRequest.readyState === XMLHttpRequest.DONE){
+
+                if(httpRequest.status === 200){
+                    //result = httpRequest.responseText;
+                    //var mouse = ["광마우스","유선마우스","비싼마우스","미키마우스"];
+                    var list = JSON.parse(httpRequest.responseText)
+                    console.log(list.length);
+                    var deviceList = $('#qos');
+                    deviceList.empty();
+                    for(var count = 0; count < list.length; count++){    
+                        console.log(list[count]);
+                        deviceList.append("<option value='"+list[count]["ipv4Addr"]+"'>"+list[count]["name"]+"</option>");
+                    }
+                }
+
+            }
+        }
+        catch(e){
+
+        }
+    }
+
+ 
+    //changeSelect();
 
     $('#publish').click(function(event) {
       var topic = $('#topic').val();
       var message = $('#message').val();
-      var qos = $('#qos').val();
-      var data = '{"topic": "' + topic + '", "message": "' + message + '", "qos": ' + qos + '}';
+      //var qos = $('#qos').val();
+      var data = '{"topic": "' + topic + '", "message": "' + message + '"}';
+      console.log(data);
       socket.emit('publish', data=data);
     });
 
     $('#subscribe').click(function(event) {
       var topic = $('#subscribe_topic').val();
-      var qos = $('#subscribe_qos').val();
-      var data = '{"topic": "' + topic + '", "qos": ' + qos + '}';
+      //var qos = $('#subscribe_qos').val();
+      var data = '{"topic": "' + topic + '"}';
+      console.log(data);
       socket.emit('subscribe', data=data);
       $('#subscribe').hide();
       $('#unsubscribe').show();
@@ -40,45 +97,26 @@
 
     // register a device
     $('#register').click(function(event) {
-        httpRequest = new XMLHttpRequest();
-        httpRequest.onreadystatechange = alertContents;
-        if(!httpRequest) {
-				alert("Can't make XMLHTTP Instance");
-				return false;
-		}
-
-		httpRequest.open('GET', 'get_my_ip');
-		httpRequest.send();		
+        var name = $('#deviceNum').val();
+        var ip = $('#ipAddr').val();
+        var data = '{"name": "' + name + '", "ipv4Addr": "' + ip + '"}';
+        console.log(data);
+        socket.emit('register', data=data);
+        getList();
     });
 
-    function alertContents() {
-        
-        try{
-
-            if(httpRequest.readyState === XMLHttpRequest.DONE){
-
-                if(httpRequest.status === 200){
-                    result = httpRequest.responseText;
-					console.log(result);
-                }
-            }
-
-        }
-        catch(e){
-            alert(e.description);
-        }
-        
-    }
 
     socket.on('mqtt_message', function(data) {
       console.log(data);
-      var text = '(' + data['topic'] + ' qos: ' + data['qos'] + ') ' + data['payload'];
+      var text = '(' + data['topic'] + ') ' + data['payload'];
       var $textarea = $('#subscribe_messages');
       $textarea.val($textarea.val() + text + '\n');
     })
-  });
+});
 </script>
 {% endblock %}
+
+
 
 {% block content %}
 <div class="container-fluid">
@@ -101,7 +139,7 @@
                 <div class="form-group">
                   <label class="control-label col-xs-4">Topic: </label>
                   <div class="col-xs-8">
-                    <input id="topic" class="form-control">
+                    <input id="topic" class="form-control" readonly>
                   </div>
                 </div>
 
@@ -113,12 +151,10 @@
                 </div>
 
                 <div class="form-group">
-                  <label class="control-label col-xs-4">Qos: </label>
+                  <label class="control-label col-xs-4">Device: </label>
                   <div class="col-xs-8">
-                    <select id="qos" class="form-control">
-                      <option value=0>0</option>
-                      <option value=1>1</option>
-                      <option value=2>2</option>
+                    <select id="qos" class="form-control" onchange=" changeSelect()">
+                      
                     </select>
                   </div> 
                 </div>
@@ -126,7 +162,6 @@
                 <div class="form-group">
                   <div class="col-xs-8 col-xs-offset-4">
                     <button id="publish" class="btn btn-primary">Publish</button>
-                    <button id="register" class="btn btn-primary">Register</button>
                   </div>
                 </div>
 
@@ -150,7 +185,7 @@
                 <div class="form-group">
                   <label class="control-label col-xs-4">Topic:</label>
                   <div class="col-xs-8">
-                    <input id="subscribe_topic" class="form-control">
+                    <input id="subscribe_topic" class="form-control" readonly>
                   </div>
                 </div>
                 <div class="form-group">
@@ -181,6 +216,45 @@
         </div>
       </div>
     </div>
+
+
+    <div class="col-xs-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Register Ochestration Device</h3>
+          </div>
+          <div class="panel-body">
+            <div class="col-xs-12">
+              <div class="row">
+                <div class="form-horizontal">
+  
+                  <div class="form-group">
+                    <label class="control-label col-xs-4">Device Number: </label>
+                    <div class="col-xs-8">
+                      <input id="deviceNum" class="form-control">
+                    </div>
+                  </div>
+  
+                  <div class="form-group">
+                    <label class="control-label col-xs-4">Ip Address: </label>
+                    <div class="col-xs-8">
+                      <input id="ipAddr" class="form-control">
+                    </div>
+                  </div>
+  
+                  <div class="form-group">
+                    <div class="col-xs-8 col-xs-offset-4">
+                      <button id="register" class="btn btn-primary">Register</button>
+                    </div>
+                  </div>
+  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
   </div>
 </div>
 {% endblock %}

@@ -1,12 +1,10 @@
-"""
 
-A small Test application to show how to use Flask-MQTT.
+import eventlet
+eventlet.monkey_patch()
 
-"""
 import os
 import subprocess
 
-import eventlet
 import json
 from flask import Flask, render_template, request, Response, jsonify
 from flask_mqtt import Mqtt
@@ -17,6 +15,7 @@ from flask_bootstrap import Bootstrap
 from database.db import initialize_db
 from database.models import Device
 
+
 app = Flask(__name__)
 
 # <host-url>/<database-name>
@@ -25,7 +24,7 @@ app.config['MONGODB_SETTINGS'] = {
 }
 
 initialize_db(app)
-eventlet.monkey_patch()
+
 
 app = Flask(__name__)
 app.config['SECRET'] = 'my secret key'
@@ -57,26 +56,26 @@ def get_devices():
     devices = Device.objects().to_json()
     return Response(devices, mimetype="application/json", status=200)
 
-@app.route('/devices', methods=['POST'])
-def add_devices():
-    body = request.get_json()
-    print("body:",body)
-    device = Device(**body).save()
-    ip = device.ipv4Addr
-    return {'ip': str(ip)}, 200
+# db register
+@socketio.on('register')
+def handle_register(json_str):
+    data = json.loads(json_str)
+    device = Device(**data).save()
+    #ip = device.ipv4Addr
+    #print(ip)
 
 
 @socketio.on('publish')
 def handle_publish(json_str):
     data = json.loads(json_str)
+    #print(data['topic'])
+    #print(data['message'])
     mqtt.publish(data['topic'], data['message'])
-
 
 @socketio.on('subscribe')
 def handle_subscribe(json_str):
     data = json.loads(json_str)
     mqtt.subscribe(data['topic'])
-
 
 @socketio.on('unsubscribe_all')
 def handle_unsubscribe_all():
@@ -90,15 +89,25 @@ def get_my_ip():
 @mqtt.on_message()
 def handle_mqtt_message(client, userdata, message):
     original = message.payload.decode()
-    print(original)
-    data2 = ""
-    ipAddr = message.topic
+    print("original: ",original)
+    data2 = "hi"
+    ipAddr = message.topic+":2376"
     
-    if(original == "status"):
+    if original == "status":
         cmd = ['docker','-H',ipAddr,'ps','-a'] 
         fd_popen = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout 
         data2 = fd_popen.read().strip() 
         fd_popen.close() 
+    elif original == "pull":
+        cmd = ['docker','-H',ipAddr,'pull','hello-world'] 
+        fd_popen = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout 
+        data2 = fd_popen.read().strip() 
+        fd_popen.close() 
+    elif original == "run":
+        cmd = ['docker','-H',ipAddr,'run','hello-world'] 
+        fd_popen = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout 
+        data2 = fd_popen.read().strip() 
+        fd_popen.close()
     print(message.topic)
 
     data = dict(
@@ -116,4 +125,5 @@ def handle_logging(client, userdata, level, buf):
 
 
 if __name__ == '__main__':
+
     socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False, debug=True)
