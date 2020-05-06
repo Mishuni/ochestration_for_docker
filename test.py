@@ -8,11 +8,23 @@ import subprocess
 
 import eventlet
 import json
-from flask import Flask, render_template
+from flask import Flask, render_template, request, Response, jsonify
 from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
 from flask_bootstrap import Bootstrap
 
+# DB
+from database.db import initialize_db
+from database.models import Device
+
+app = Flask(__name__)
+
+# <host-url>/<database-name>
+app.config['MONGODB_SETTINGS'] = {
+    'host': 'mongodb://localhost/test'
+}
+
+initialize_db(app)
 eventlet.monkey_patch()
 
 app = Flask(__name__)
@@ -40,6 +52,19 @@ bootstrap = Bootstrap(app)
 def index():
     return render_template('mqttindex.html')
 
+@app.route('/devices')
+def get_devices():
+    devices = Device.objects().to_json()
+    return Response(devices, mimetype="application/json", status=200)
+
+@app.route('/devices', methods=['POST'])
+def add_devices():
+    body = request.get_json()
+    print("body:",body)
+    device = Device(**body).save()
+    ip = device.ipv4Addr
+    return {'ip': str(ip)}, 200
+
 
 @socketio.on('publish')
 def handle_publish(json_str):
@@ -57,9 +82,6 @@ def handle_subscribe(json_str):
 def handle_unsubscribe_all():
     mqtt.unsubscribe_all()
 
-
-from flask import request
-from flask import jsonify
 
 @app.route("/get_my_ip", methods=["GET"])
 def get_my_ip():

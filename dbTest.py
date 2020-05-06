@@ -20,6 +20,7 @@ def get_movies():
 @app.route('/movies', methods=['POST'])
 def add_movie():
     body = request.get_json()
+    print("body:",body)
     movie = Movie(**body).save()
     id = movie.id
     return {'id': str(id)}, 200

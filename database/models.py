@@ -4,3 +4,8 @@ class Movie(db.Document):
     name = db.StringField(required=True, unique=True)
     casts = db.ListField(db.StringField(), required=True)
     genres = db.ListField(db.StringField(), required=True)
+
+
+class Device(db.Document):
+    name = db.StringField(required=True, unique=True)
+    ipv4Addr = db.StringField(required=True, unique=True)
