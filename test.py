@@ -91,28 +91,35 @@ def handle_mqtt_message(client, userdata, message):
     original = message.payload.decode()
     print("original: ",original)
     data2 = "hi"
-    ipAddr = message.topic+":2376"
+    ipAddr = message.topic
     
     if original == "status":
         cmd = ['docker','-H',ipAddr,'ps','-a'] 
         fd_popen = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout 
-        data2 = fd_popen.read().strip() 
+        data2 = str(fd_popen.read().strip())
+        print(data2[1:].split('\\'))
         fd_popen.close() 
     elif original == "pull":
         cmd = ['docker','-H',ipAddr,'pull','hello-world'] 
         fd_popen = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout 
-        data2 = fd_popen.read().strip() 
+        data2 = str(fd_popen.read().strip())
         fd_popen.close() 
     elif original == "run":
         cmd = ['docker','-H',ipAddr,'run','hello-world'] 
         fd_popen = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout 
-        data2 = fd_popen.read().strip() 
+        data2 = str(fd_popen.read().strip())
         fd_popen.close()
-    print(message.topic)
+    elif original == "images":
+        cmd = ['docker','-H',ipAddr,'images'] 
+        fd_popen = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout 
+        data2 = str(fd_popen.read().strip())
+        fd_popen.close()
+        
+    # print(message.topic)
 
     data = dict(
         topic=message.topic,
-        payload=str(data2)
+        payload=data2
     )
    
     # print(os.system('docker -H 192.168.0.62:2376 ps -a'))
