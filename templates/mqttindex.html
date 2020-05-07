@@ -21,6 +21,7 @@ function changeSelect(){
     sub_topic.val(selectVal);
     //console.log(selectVal);
 }
+
 $(document).ready(function() {
     var socket = io.connect('http://' + document.domain + ':' + location.port);
     let httpRequest;
@@ -45,15 +46,15 @@ $(document).ready(function() {
             if(httpRequest.readyState === XMLHttpRequest.DONE){
 
                 if(httpRequest.status === 200){
-                    //result = httpRequest.responseText;
-                    //var mouse = ["광마우스","유선마우스","비싼마우스","미키마우스"];
+
                     var list = JSON.parse(httpRequest.responseText)
-                    console.log(list.length);
+                    //console.log(list.length);
                     var deviceList = $('#qos');
                     deviceList.empty();
-                    for(var count = 0; count < list.length; count++){    
+                    for(var count = 0; count < list.length; ++count){    
                         console.log(list[count]);
-                        deviceList.append("<option value='"+list[count]["ipv4Addr"]+"'>"+list[count]["name"]+"</option>");
+                        deviceList.append("<option value='"+list[count]["name"]+'_'+list[count]["id"]+"'>"
+                        +list[count]["name"]+'_'+list[count]["id"]+"</option>");
                     }
                 }
 

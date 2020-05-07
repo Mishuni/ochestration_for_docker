@@ -20,7 +20,7 @@ app = Flask(__name__)
 
 # <host-url>/<database-name>
 app.config['MONGODB_SETTINGS'] = {
-    'host': 'mongodb://localhost/test'
+    'host': 'mongodb://localhost/cluster'
 }
 
 initialize_db(app)
@@ -58,7 +58,7 @@ def get_devices():
 
 @app.route('/devices/<id>', methods=['DELETE'])
 def delete_device(id):
-    Device.objects.get(name=id).delete()
+    Device.objects.get(id=id).delete()
     return '', 200
 
 # db register
