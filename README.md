@@ -10,7 +10,7 @@ $ sudo gedit /etc/systemd/system/multi-user.target.wants/docker.service
 .
 .
 # ExecStart=/usr/bin/dockerd -H fd:// # 변경 전
-ExecStart=/usr/bin/dockerd -H fd:// -H tcp://0.0.0.0:2376 # 변경 후
+ExecStart=/usr/bin/dockerd -H fd:// -H tcp://0.0.0.0:2375 # 변경 후
 .
 .
 .
