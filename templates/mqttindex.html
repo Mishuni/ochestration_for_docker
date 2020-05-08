@@ -18,7 +18,7 @@ function changeSelect(){
     var selectVal = $('#qos option:selected').val();
     
     topic.val(selectVal);
-    sub_topic.val(selectVal);
+    sub_topic.val(selectVal+"_result");
     //console.log(selectVal);
 }
 
@@ -53,8 +53,8 @@ $(document).ready(function() {
                     deviceList.empty();
                     for(var count = 0; count < list.length; ++count){    
                         console.log(list[count]);
-                        deviceList.append("<option value='"+list[count]["name"]+'_'+list[count]["id"]+"'>"
-                        +list[count]["name"]+'_'+list[count]["id"]+"</option>");
+                        deviceList.append("<option value='"+list[count]["name"]+'_'+list[count]["_id"]+"'>"
+                        +list[count]["name"]+'_'+list[count]["_id"]+"</option>");
                     }
                 }
 
@@ -99,9 +99,10 @@ $(document).ready(function() {
 
     // register a device
     $('#register').click(function(event) {
-        var name = $('#deviceNum').val();
+        var id = $('#deviceNum').val();
         var ip = $('#ipAddr').val();
-        var data = '{"name": "' + name + '", "ipv4Addr": "' + ip + '"}';
+        var name = $('#deviceName').val();
+        var data = '{"id": "' + id + '", "ipv4Addr": "' + ip + '", "name": "'+ name + '"}';
         console.log(data);
         socket.emit('register', data=data);
         getList();
@@ -114,7 +115,7 @@ $(document).ready(function() {
       //var text2=text.split("\n");
       //console.log(text2.length);
       //console.log(text2);
-      var text3 = text.substring(1).split("\\n");
+      var text3 = text.split("\\n");
       console.log(text3);
       var $textarea = $('#subscribe_messages');
 
@@ -249,14 +250,21 @@ $(document).ready(function() {
                   <div class="form-group">
                     <label class="control-label col-xs-4">Device Number: </label>
                     <div class="col-xs-8">
-                      <input id="deviceNum" class="form-control">
+                      <input id="deviceNum" class="form-control" required>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="control-label col-xs-4">Device Name: </label>
+                    <div class="col-xs-8">
+                      <input id="deviceName" class="form-control" required>
                     </div>
                   </div>
   
                   <div class="form-group">
                     <label class="control-label col-xs-4">Ip Address: </label>
                     <div class="col-xs-8">
-                      <input id="ipAddr" class="form-control">
+                      <input id="ipAddr" class="form-control" required>
                     </div>
                   </div>
   

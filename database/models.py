@@ -8,7 +8,7 @@ import datetime
 
 
 class Device(db.Document):
-    id = db.IntField(required=True, unique=True, primary_key=True)
+    id = db.IntField(required=True, primary_key=True)
     name = db.StringField(required=True)
     ipv4Addr = db.StringField(required=True)
-    register = db.DateTimeField(default=datetime.utcnow)
+    register = db.DateTimeField(default=datetime.datetime.utcnow)

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import paho.mqtt.client as mqtt
 import os 
 import subprocess
@@ -21,35 +22,44 @@ def on_subscribe(client, userdata, mid, granted_qos):
 def on_message(client, userdata, msg):
     command = str(msg.payload.decode("utf-8"))
     print(command)
+    print(msg.topic)
+    runCmd(command)
+
+commandList = {"status":['docker','ps','-a']}
+
+def runCmd(command):
+    data2 = command
     if command == "status":
         cmd = ['docker','ps','-a'] 
         fd_popen = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout 
         data2 = str(fd_popen.read().strip())
-        print(data2[1:].split('\\n'))
+        #print(data2[1:].split('\\n'))
         fd_popen.close() 
     elif command == "pull":
         cmd = ['docker','pull','hello-world'] 
         fd_popen = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout 
         data2 = str(fd_popen.read().strip())
-        print(data2[1:].split('\\n'))
+        #print(data2[1:].split('\\n'))
         fd_popen.close() 
     elif command == "run":
         cmd = ['docker','run','hello-world'] 
         fd_popen = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout 
         data2 = str(fd_popen.read().strip())
-        print(data2[1:].split('\\n'))
+        data2=data2[2:]
+        #print(data2[1:].split('\\n'))
         fd_popen.close()
     elif command == "images":
         cmd = ['docker','images'] 
         fd_popen = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout 
         data2 = str(fd_popen.read().strip())
-        print(data2[1:].split('\\n'))
         fd_popen.close()
-    os.system("python3 ./client/client_publish.py "+data2)
+    data2=data2[2:-1].split('\\n')
+    f = open("result.txt", 'w')
+    for line in data2:
+        f.write(line+"\n")
     
-
-def on_publish(client, userdata, mid):
-    print("In on_pub callback mid= ", mid)
+    f.close()
+    os.system("python3 $(pwd)/client_publish.py")
 
 # 새로운 클라이언트 생성
 client = mqtt.Client()
@@ -59,10 +69,10 @@ client.on_connect = on_connect
 client.on_disconnect = on_disconnect
 client.on_subscribe = on_subscribe
 client.on_message = on_message
-client.on_publish = on_publish
+#client.on_publish = on_publish
 # address : localhost, port: 1883 에 연결
 client.connect('broker.hivemq.com', 1883)
 # common topic 으로 메세지 발행
-client.subscribe('192.168.0.62', 1)
+client.subscribe('se_2', 1)
 #client.publish('192.168.0.62', json.dumps({"result": "ok"}), 1)
 client.loop_forever()
