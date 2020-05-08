@@ -1,20 +1,10 @@
-llo from Docker!
-This message shows that your installation appears to be working correctly.
-
-To generate this message, Docker took the following steps:
- 1. The Docker client contacted the Docker daemon.
- 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
-    (amd64)
- 3. The Docker daemon created a new container from that image which runs the
-    executable that produces the output you are currently reading.
- 4. The Docker daemon streamed that output to the Docker client, which sent it
-    to your terminal.
-
-To try something more ambitious, you can run an Ubuntu container with:
- $ docker run -it ubuntu bash
-
-Share images, automate workflows, and more with a free Docker ID:
- https://hub.docker.com/
-
-For more examples and ideas, visit:
- https://docs.docker.com/get-started/
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                      PORTS               NAMES
+57ffa0220c70        hello-world         "/hello"                 11 seconds ago      Exited (0) 11 seconds ago                       funny_nightingale
+94d14c4694eb        hello-world         "/hello"                 19 minutes ago      Exited (0) 19 minutes ago                       relaxed_northcutt
+936f4b530cc7        hello-world         "/hello"                 21 minutes ago      Exited (0) 21 minutes ago                       competent_jones
+85b563fc89cc        hello-world         "/hello"                 21 minutes ago      Exited (0) 21 minutes ago                       festive_goldwasser
+427ccf2d21c6        hello-world         "/hello"                 25 minutes ago      Exited (0) 25 minutes ago                       vigorous_perlman
+773ddf5c5543        hello-world         "/hello"                 25 minutes ago      Exited (0) 25 minutes ago                       happy_wilbur
+55c0c4cc74d5        hello-world         "/hello"                 29 minutes ago      Exited (0) 29 minutes ago                       practical_franklin
+fe1f1aec4444        hello-world         "/hello"                 2 hours ago         Exited (0) 2 hours ago                          zen_pasteur
+c44f74672999        flask:test          "/bin/sh -c \'gunicor\xe2\x80\xa6"   4 hours ago         Exited (137) 3 hours ago                        flask

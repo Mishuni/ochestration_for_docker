@@ -25,41 +25,33 @@ def on_message(client, userdata, msg):
     print(msg.topic)
     runCmd(command)
 
-commandList = {"status":['docker','ps','-a']}
+commandList = {
+    "status":['docker','ps','-a'],
+    "pull":['docker','pull','hello-world'],
+    "run":['docker','run','hello-world'],
+    "images":['docker','images'] 
+    }
 
 def runCmd(command):
     data2 = command
-    if command == "status":
-        cmd = ['docker','ps','-a'] 
+    if(command in commandList):
+        cmd = commandList.get(command)
         fd_popen = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout 
         data2 = str(fd_popen.read().strip())
-        #print(data2[1:].split('\\n'))
-        fd_popen.close() 
-    elif command == "pull":
-        cmd = ['docker','pull','hello-world'] 
-        fd_popen = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout 
-        data2 = str(fd_popen.read().strip())
-        #print(data2[1:].split('\\n'))
-        fd_popen.close() 
-    elif command == "run":
-        cmd = ['docker','run','hello-world'] 
-        fd_popen = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout 
-        data2 = str(fd_popen.read().strip())
-        data2=data2[2:]
         #print(data2[1:].split('\\n'))
         fd_popen.close()
-    elif command == "images":
-        cmd = ['docker','images'] 
-        fd_popen = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout 
-        data2 = str(fd_popen.read().strip())
-        fd_popen.close()
-    data2=data2[2:-1].split('\\n')
-    f = open("result.txt", 'w')
-    for line in data2:
-        f.write(line+"\n")
+        data2=data2[2:-1].split('\\n')
+
+        f = open("result.txt", 'w')
+        for line in data2:
+            f.write(line+"\n")
     
-    f.close()
-    os.system("python3 $(pwd)/client_publish.py")
+        f.close()
+        os.system("python3 $(pwd)/client_publish.py")
+    else:
+        print("Wrong command")
+    
+    
 
 # 새로운 클라이언트 생성
 client = mqtt.Client()
