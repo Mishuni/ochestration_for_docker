@@ -3,8 +3,9 @@ import paho.mqtt.client as mqtt
 import os 
 import subprocess
 import json
+from config import MQTT_CONFIG
 
-deviceName = "miseon"
+deviceName = MQTT_CONFIG['deviceName']
 client_path = os.path.dirname(os.path.abspath(__file__))+'/client_publish.py'
 print(client_path)
 
