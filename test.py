@@ -46,7 +46,7 @@ mqtt = Mqtt(app)
 socketio = SocketIO(app)
 bootstrap = Bootstrap(app)
 
-
+### flask
 @app.route('/')
 def index():
     return render_template('mqttindex.html')

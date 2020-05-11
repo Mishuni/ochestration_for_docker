@@ -42,7 +42,7 @@ commandList = {
 def runCmd(command):
     order = command[0]
     if(order in commandList):
-        cmd = commandList.get(order)
+        cmd = commandList.get(order).copy()
         for i in range(1,len(command)):
             cmd.append(command[i])
             print(command[i])

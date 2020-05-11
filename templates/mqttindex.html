@@ -10,8 +10,6 @@
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
 <script type="text/javascript" charset="utf-8">
 
-
-
 function changeSelect(){
     //var langSelect = document.getElementById("id-lang");
     var deviceList = $('#qos');
@@ -122,20 +120,22 @@ $(document).ready(function() {
 
 
     socket.on('mqtt_message', function(data) {
-      var text = data['payload'];
-      //console.log(data['payload'].indexOf("\n"));
-      //var text2=text.split("\n");
-      //console.log(text2.length);
-      //console.log(text2);
-      var text3 = text.split("\\n");
-      console.log(text3);
-      var $textarea = $('#subscribe_messages');
+      var topic = data['topic'];
+      console.log("topic? "+topic);
+      var sub_topic = $('#subscribe_topic').val();
+      console.log("sub_topic? "+sub_topic);
+      if(sub_topic == topic){
+        var text = data['payload'];
+        //var text3 = text.split("\\n");
+        //console.log(text3);
+        var $textarea = $('#subscribe_messages');
 
-      $textarea.val($textarea.val() + "--------------------------" + '\n');
-      for(var count = 0; count < text3.length; count++){  
-        $textarea.val($textarea.val() + text3[count] + '\n');
-      }
-      
+        $textarea.val($textarea.val() + "--------------------------" + '\n');
+        $textarea.val($textarea.val() + text + '\n');
+        // for(var count = 0; count < text3.length; count++){  
+        //   $textarea.val($textarea.val() + text3[count] + '\n');
+        // }
+    }
       
     });
 });
