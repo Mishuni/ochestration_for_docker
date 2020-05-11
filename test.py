@@ -61,7 +61,7 @@ def delete_device(id):
     Device.objects.get(id=id).delete()
     return '', 200
 
-@app.route('/devices/<id>', methods=['POST'])
+@app.route('/devices/<id>', methods=['GET'])
 def get_device(id):
     device = Device.objects.get(id=id).to_json()
     return Response(device, mimetype="application/json", status=200)
