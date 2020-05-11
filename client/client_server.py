@@ -4,6 +4,7 @@ import os
 import subprocess
 import json
 
+deviceName = "miseon"
 client_path = os.path.dirname(os.path.abspath(__file__))+'/client_publish.py'
 print(client_path)
 
@@ -68,6 +69,6 @@ client.on_message = on_message
 # address : localhost, port: 1883 에 연결
 client.connect('broker.hivemq.com', 1883)
 # topic subscribe
-client.subscribe('se_2', 1)
+client.subscribe(deviceName, 1)
 #client.publish('192.168.0.62', json.dumps({"result": "ok"}), 1)
 client.loop_forever()

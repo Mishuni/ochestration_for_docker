@@ -1,6 +1,7 @@
 import paho.mqtt.client as mqtt
 import json
 import sys
+from client_server import deviceName
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
@@ -31,7 +32,7 @@ if __name__ == '__main__':
     client.on_publish = on_publish
     client.connect('broker.hivemq.com', 1883)
     client.loop_start()
-    client.publish('se_2_result',  data, 1)
+    client.publish(deviceName+'_result',  data, 1)
     client.loop_stop()
     # 연결 종료
     client.disconnect()

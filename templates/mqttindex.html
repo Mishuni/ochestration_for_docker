@@ -61,11 +61,12 @@ $(document).ready(function() {
                     deviceList.empty();
                     for(var count = 0; count < list.length; ++count){    
                         console.log(list[count]);
-                        deviceList.append("<option value='"+list[count]["name"]+'_'+list[count]["_id"]+"'>"
+                        deviceList.append("<option value='"+list[count]["name"]+"'>"
                         +list[count]["name"]+'_'+list[count]["_id"]+"</option>");
                     }
                     var deviceNum = $('#deviceNum');
                     deviceNum.val(list.length+1);
+                    changeSelect();
                 }
 
             }
