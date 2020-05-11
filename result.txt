@@ -1,2 +1,4 @@
-CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                     PORTS               NAMES
-8f63c7c5fba7        flask:test          "/bin/sh -c \'gunicor\xe2\x80\xa6"   3 hours ago         Exited (137) 2 hours ago                       flask
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+flask               test                efddb645b43d        5 hours ago         982MB
+python              3.6                 8802e0ebf8c7        11 days ago         914MB
+influxdb            latest              4f3dc9011b2a        2 weeks ago         304MB

@@ -29,11 +29,10 @@ $(document).ready(function() {
     let httpRequest;
     //intervalReq = setInterval(getList,2000);
     getList();
-    //getIP();
     
-    $.getJSON('http://Gd.geobytes.com/GetCityDetails?callback=?', function(data) {
-    console.log(JSON.stringify(data, null, 2));
-    });
+    // $.getJSON('http://Gd.geobytes.com/GetCityDetails?callback=?', function(data) {
+    // console.log(JSON.stringify(data, null, 2));
+    // });
     
 
     function getList(){
@@ -76,12 +75,10 @@ $(document).ready(function() {
         }
     }
 
- 
-    //changeSelect();
 
     $('#publish').click(function(event) {
       var topic = $('#topic').val();
-      var message = $('#message').val();
+      var message = $('#message').val()+' '+$('#optionMessage').val();
       console.log(message);
       //var qos = $('#qos').val();
       var data = '{"topic": "' + topic + '", "message": "' + message + '"}';
@@ -153,7 +150,7 @@ $(document).ready(function() {
 <div class="container-fluid">
   <div class="row">
     <div class="col-xs-12">
-      <h1>Flask-MQTT Example</h1>
+      <h1>Edge Microservice Deployment F/W</h1>
     </div>
   </div>
   <div class="row">
@@ -175,6 +172,15 @@ $(document).ready(function() {
                 </div>
 
                 <div class="form-group">
+                  <label class="control-label col-xs-4">Device: </label>
+                  <div class="col-xs-8">
+                    <select id="qos" class="form-control" onchange=" changeSelect()">
+                      
+                    </select>
+                  </div> 
+                </div>
+
+                <div class="form-group">
                   <label class="control-label col-xs-4">Message: </label>
                   <div class="col-xs-8">
                     <select id="message" class="form-control">
@@ -183,19 +189,18 @@ $(document).ready(function() {
                       <option value="run">run</option>
                       <option value="images">images</option>
                       <option value="stop">stop</option>
-                      <option value="remove">remove container</option>
+                      <option value="remove">remove</option>
                     </select>
                   </div>
                 </div>
 
                 <div class="form-group">
-                  <label class="control-label col-xs-4">Device: </label>
+                  <label class="control-label col-xs-4">Add Message: </label>
                   <div class="col-xs-8">
-                    <select id="qos" class="form-control" onchange=" changeSelect()">
-                      
-                    </select>
-                  </div> 
+                    <input id="optionMessage" class="form-control" >
+                  </div>
                 </div>
+
 
                 <div class="form-group">
                   <div class="col-xs-8 col-xs-offset-4">

@@ -25,22 +25,28 @@ def on_subscribe(client, userdata, mid, granted_qos):
 
 
 def on_message(client, userdata, msg):
-    command = str(msg.payload.decode("utf-8"))
+    command = str(msg.payload.decode("utf-8")).strip().split(' ')
     print(command)
     print(msg.topic)
     runCmd(command)
 
 commandList = {
     "status":['docker','ps','-a'],
-    "pull":['docker','pull','hello-world'],
-    "run":['docker','run','hello-world'],
-    "images":['docker','images'] 
+    "pull":['docker','pull'],
+    "run":['docker','run'],
+    "images":['docker','images'],
+    "stop":['docker','stop'],
+    "remove":['docker','rm'] 
     }
 
 def runCmd(command):
-    data2 = command
-    if(command in commandList):
-        cmd = commandList.get(command)
+    order = command[0]
+    if(order in commandList):
+        cmd = commandList.get(order)
+        for i in range(1,len(command)):
+            cmd.append(command[i])
+            print(command[i])
+        print(cmd)
         fd_popen = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout 
         data2 = str(fd_popen.read().strip())
         #print(data2[1:].split('\\n'))

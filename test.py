@@ -71,20 +71,31 @@ def get_device(id):
     device = Device.objects.get(id=id).to_json()
     return Response(device, mimetype="application/json", status=200)
 
+@app.route('/movies', methods=['POST'])
+def add_movie():
+    body = request.get_json()
+    print("body:",body)
+    movie = Movie(**body).save()
+    id = movie.id
+    return {'id': str(id)}, 200
+
+@app.route('/register', methods=['POST'])
+def add_device():
+    body = request.get_json()
+    device = Device(**data).save()
+    deviceName = device.deviceName
+    return {'deviceName':str(deviceName)}, 200
+
+### socket
 # db register
 @socketio.on('register')
 def handle_register(json_str):
     data = json.loads(json_str)
     device = Device(**data).save()
-    #ip = device.ipv4Addr
-    #print(ip)
-
 
 @socketio.on('publish')
 def handle_publish(json_str):
     data = json.loads(json_str)
-    #print(data['topic'])
-    #print(data['message'])
     mqtt.publish(data['topic'], data['message'])
 
 @socketio.on('subscribe')
@@ -97,20 +108,15 @@ def handle_unsubscribe_all():
     mqtt.unsubscribe_all()
 
 
-@app.route("/get_my_ip", methods=["GET"])
-def get_my_ip():
-    return jsonify({'ip': request.remote_addr}), 200
-
+### mqtt
 @mqtt.on_message()
 def handle_mqtt_message(client, userdata, message):
     original = message.payload.decode()
     print("original: ",original)
-    data2 = str(original)
-    ipAddr = message.topic
 
     data = dict(
         topic=message.topic,
-        payload=data2
+        payload=str(original)
     )
    
     # print(os.system('docker -H 192.168.0.62:2376 ps -a'))
