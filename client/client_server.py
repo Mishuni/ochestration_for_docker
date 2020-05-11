@@ -4,6 +4,9 @@ import os
 import subprocess
 import json
 
+client_path = os.path.dirname(os.path.abspath(__file__))+'/client_publish.py'
+print(client_path)
+
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("connected OK")
@@ -47,7 +50,7 @@ def runCmd(command):
             f.write(line+"\n")
     
         f.close()
-        os.system("python3 $(pwd)/client_publish.py")
+        os.system("python3 "+client_path)
     else:
         print("Wrong command")
     
@@ -64,7 +67,7 @@ client.on_message = on_message
 #client.on_publish = on_publish
 # address : localhost, port: 1883 에 연결
 client.connect('broker.hivemq.com', 1883)
-# common topic 으로 메세지 발행
+# topic subscribe
 client.subscribe('se_2', 1)
 #client.publish('192.168.0.62', json.dumps({"result": "ok"}), 1)
 client.loop_forever()

@@ -31,3 +31,13 @@ $ sudo systemctl start mongod
 
 ```
 
+
+
+#### Ngrox start
+
+```sh
+# ngrok 위치로 가서
+$ ngrok http 8080
+
+```
+
