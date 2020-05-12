@@ -11,7 +11,6 @@
 <script type="text/javascript" charset="utf-8">
 
 function changeSelect(){
-    //var langSelect = document.getElementById("id-lang");
     var deviceList = $('#qos');
     var topic = $('#topic');
     var sub_topic = $('#subscribe_topic');
@@ -20,6 +19,10 @@ function changeSelect(){
     topic.val(selectVal);
     sub_topic.val(selectVal+"_result");
     //console.log(selectVal);
+}
+
+function changeMsg(){
+  var option = $('#optionMessage').val('');
 }
 
 $(document).ready(function() {
@@ -31,7 +34,6 @@ $(document).ready(function() {
     // $.getJSON('http://Gd.geobytes.com/GetCityDetails?callback=?', function(data) {
     // console.log(JSON.stringify(data, null, 2));
     // });
-    
 
     function getList(){
         httpRequest = new XMLHttpRequest();
@@ -77,10 +79,10 @@ $(document).ready(function() {
     $('#publish').click(function(event) {
       var topic = $('#topic').val();
       var message = $('#message').val()+' '+$('#optionMessage').val();
-      console.log(message);
+      //console.log(message);
       //var qos = $('#qos').val();
       var data = '{"topic": "' + topic + '", "message": "' + message + '"}';
-      console.log(data);
+      //console.log(data);
       socket.emit('publish', data=data);
     });
 
@@ -88,11 +90,12 @@ $(document).ready(function() {
       var topic = $('#subscribe_topic').val();
       //var qos = $('#subscribe_qos').val();
       var data = '{"topic": "' + topic + '"}';
-      console.log(data);
+      //console.log(data);
       socket.emit('subscribe', data=data);
       $('#subscribe').hide();
       $('#unsubscribe').show();
       $('#subscribe_topic').prop('readonly', true);
+      $('#subscribe_messages').val('');
     });
 
     $('#unsubscribe').click(function(event) {
@@ -121,16 +124,14 @@ $(document).ready(function() {
 
     socket.on('mqtt_message', function(data) {
       var topic = data['topic'];
-      console.log("topic? "+topic);
       var sub_topic = $('#subscribe_topic').val();
-      console.log("sub_topic? "+sub_topic);
       if(sub_topic == topic){
         var text = data['payload'];
         //var text3 = text.split("\\n");
         //console.log(text3);
         var $textarea = $('#subscribe_messages');
 
-        $textarea.val($textarea.val() + "--------------------------" + '\n');
+        $textarea.val($textarea.val() + "------------------------------------" + '\n');
         $textarea.val($textarea.val() + text + '\n');
         // for(var count = 0; count < text3.length; count++){  
         //   $textarea.val($textarea.val() + text3[count] + '\n');
@@ -183,7 +184,7 @@ $(document).ready(function() {
                 <div class="form-group">
                   <label class="control-label col-xs-4">Message: </label>
                   <div class="col-xs-8">
-                    <select id="message" class="form-control">
+                    <select id="message" class="form-control" onchange=" changeMsg()">
                       <option value="status">status</option>
                       <option value="pull">pull</option>
                       <option value="run">run</option>
@@ -231,16 +232,7 @@ $(document).ready(function() {
                     <input id="subscribe_topic" class="form-control" readonly>
                   </div>
                 </div>
-                <div class="form-group">
-                  <label class="control-label col-xs-4">Qos: </label>
-                  <div class="col-xs-8">
-                    <select id="subscribe_qos" class="form-control">
-                      <option value=0>0</option>
-                      <option value=1>1</option>
-                      <option value=2>2</option>
-                    </select>
-                  </div> 
-                </div>
+
                 <div class="form-group">
                   <div class="col-xs-8 col-xs-offset-4">
                     <button id="subscribe" class="btn btn-primary">Subscribe</button>
@@ -249,8 +241,8 @@ $(document).ready(function() {
                 </div>
                 <div class="form-group">
                   <label class="control-label col-xs-4">Messages:</label>
-                  <div class="col-xs-8">
-                    <textarea id="subscribe_messages" class="form-control" rows=10></textarea>
+                  <div class="col-xs-12">
+                    <textarea id="subscribe_messages" class="form-control" rows=15></textarea>
                   </div>
                 </div>
               </div>

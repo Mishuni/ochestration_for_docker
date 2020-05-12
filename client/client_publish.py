@@ -30,7 +30,9 @@ if __name__ == '__main__':
     client.on_connect = on_connect
     client.on_disconnect = on_disconnect
     client.on_publish = on_publish
-    client.connect('broker.hivemq.com', 1883)
+    #client.connect('broker.hivemq.com', 1883)
+    client.connect(MQTT_CONFIG['mqtt_broker_url'],MQTT_CONFIG['mqtt_broker_port'])
+    
     client.loop_start()
     client.publish(MQTT_CONFIG['deviceName']+'_result',  data, 1)
     client.loop_stop()

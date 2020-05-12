@@ -22,6 +22,13 @@ $ docker -H 서버IP:포트 명령어
 
 
 
+### Mosquitto using docker
+
+```sh
+$ sudo docker pull ansi/mosquitto
+$ sudo docker run -p 1883:1883 --name mosquitto -d ansi/mosquitto
+```
+
 
 
 #### mongoDB start
@@ -37,7 +44,7 @@ $ sudo systemctl start mongod
 
 ```sh
 # ngrok 위치로 가서
-$ ngrok http 8080
+$ ./ngrok http 8080
 
 ```
 
