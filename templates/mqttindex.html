@@ -11,69 +11,114 @@
 <script type="text/javascript" charset="utf-8">
 
 function changeSelect(){
-    var topic = $('#topic');
-    var sub_topic = $('#subscribe_topic');
-    var selectVal = $('#pubDevice option:selected').val();
-    
-    topic.val(selectVal);
-    sub_topic.val(selectVal+"_result");
+  var topic = $('#topic');
+  var sub_topic = $('#subscribe_topic');
+  var selectVal = $('#pubDevice option:selected').val();
+  topic.val(selectVal);
+  sub_topic.val(selectVal+"_result");
+}
+
+function changeQueueSelect(){
+  var selectVal = $('#regQueue option:selected').val();
+  getList("registerQueue/"+selectVal,httpRequest3);
 }
 
 function changeMsg(){
   var option = $('#optionMessage').val('');
 }
 
+function getList(requestName,httpRequest){
+  httpRequest = new XMLHttpRequest();
+  httpRequest.onreadystatechange = function(){
+    printList(httpRequest);
+  };
+
+  if(!httpRequest){
+      console.log("Can't make XMLHTTP instance");
+      return false;
+  }
+
+  httpRequest.open('GET',requestName);
+  httpRequest.send();
+}
+
+function printList(httpRequest){
+  try{
+      if(httpRequest.readyState === XMLHttpRequest.DONE){
+          if(httpRequest.status === 200){
+            console.log(httpRequest.responseURL);
+            var url = httpRequest.responseURL;
+            printListDetail(url,httpRequest);
+          }
+      }
+  }
+  catch(e){
+    console.log(e.message);
+    //print(e.message);
+  }
+}
+
+function printListDetail(url,httpRequest){
+  if(url.endsWith("devices")){
+    var list = JSON.parse(httpRequest.responseText);
+    var deviceList = $('#pubDevice');
+    deviceList.empty();
+    for(var count = 0; count < list.length; ++count){
+      //console.log(list[count]);
+      deviceList.append("<option value='"+list[count]["name"]+"'>"
+      +list[count]["name"]+'_'+list[count]["_id"]+"</option>");
+    }
+    var deviceNum = $('#deviceNum');
+    deviceNum.val(list.length+1);
+    changeSelect();
+    }
+  
+  else if(url.endsWith("registerQueue")){
+    var list = JSON.parse(httpRequest.responseText);
+    var deviceList = $('#regQueue');
+    deviceList.empty();
+    deviceList.append("<option value='' selected disabled >Select a device</option>");
+    for(var count = 0; count < list.length; ++count){
+      deviceList.append("<option value='"+list[count]["name"]+"'>"
+      +list[count]["name"]+"</option>");
+      }
+    //changeSelect();
+    }
+    // GET 
+    else if(url.indexOf("/registerQueue/")>0){
+      // hostname osname cpus ipAddr 
+      var list = JSON.parse(httpRequest.responseText);
+      var hostname = $('#hostname');
+      hostname.val(list["hostname"]);
+      var osname = $('#osname');
+      osname.val(list["os_system"]);
+      var cpus = $('#cpus');
+      cpus.val(list["cpu_count"]);
+      var ipAddr = $('#ipAddr');
+      ipAddr.val(list["ipv4Addr"]);
+    }
+    else if(url.indexOf("/removeQueue/")>0){
+      getList("registerQueue",httpRequest2);
+    }
+}
+
+let httpRequest1;
+let httpRequest2;
+let httpRequest3;
+let httpRequest4;
+
 $(document).ready(function() {
     var socket = io.connect('http://' + document.domain + ':' + location.port);
-    let httpRequest;
+    
     //intervalReq = setInterval(getList,2000);
-    getList();
+    getList("devices",httpRequest1);
+    getList("registerQueue",httpRequest2);
     
     // $.getJSON('http://Gd.geobytes.com/GetCityDetails?callback=?', function(data) {
     // console.log(JSON.stringify(data, null, 2));
     // });
 
-    function getList(){
-        httpRequest = new XMLHttpRequest();
-        httpRequest.onreadystatechange = printList;
-        if(!httpRequest){
-            console.log("Can't make XMLHTTP instance");
-            return false;
-        }
-
-        httpRequest.open('GET','devices');
-        httpRequest.send();
-    }
-
-    function printList(){
-        try{
-            if(httpRequest.readyState === XMLHttpRequest.DONE){
-
-                if(httpRequest.status === 200){
-
-                    var list = JSON.parse(httpRequest.responseText)
-                    //console.log(list.length);
-                    var deviceList = $('#pubDevice');
-                    deviceList.empty();
-                    for(var count = 0; count < list.length; ++count){    
-                        console.log(list[count]);
-                        deviceList.append("<option value='"+list[count]["name"]+"'>"
-                        +list[count]["name"]+'_'+list[count]["_id"]+"</option>");
-                    }
-                    var deviceNum = $('#deviceNum');
-                    deviceNum.val(list.length+1);
-                    changeSelect();
-                }
-
-            }
-        }
-        catch(e){
-          console.log(e.message);
-          //print(e.message);
-        }
-    }
-
-
+    
     $('#publish').click(function(event) {
       var topic = $('#topic').val();
       var message = $('#message').val()+' '+$('#optionMessage').val();
@@ -101,17 +146,28 @@ $(document).ready(function() {
 
     // register a device
     $('#register').click(function(event) {
-        
-        var ip = $('#ipAddr').val();
-        var name = $('#deviceName').val();
-        getList();
-        var id = $('#deviceNum').val();
-        var data = '{"id": "' + id + '", "ipv4Addr": "' + ip + '", "name": "'+ name + '"}';
-        console.log(data);
-        socket.emit('register', data=data);
-        getList();
-        $('#ipAddr').val('');
-        $('#deviceName').val('');
+      var name = $('#regQueue option:selected');
+      var hostname = $('#hostname');
+      var osname = $('#osname');
+      var cpus = $('#cpus');
+      var ipAddr = $('#ipAddr');
+      
+      getList("devices",httpRequest1);
+      var id = $('#deviceNum').val();
+      var data = '{"id": "' + id + '", "ipv4Addr": "' + ipAddr.val() + '", "name": "'+ name.val()
+      + '", "hostname": "'+ hostname.val()+ '", "cpu_count": "'+ cpus.val() 
+      + '", "os_system": "'+ osname.val()+ '"}';
+      console.log(data);
+      getList("removeQueue/"+name.val(),httpRequest4);
+      socket.emit('register', data=data);
+      getList("devices",httpRequest1);
+      
+      name.val('');
+      hostname.val('');
+      osname.val('');
+      cpus.val('');
+      ipAddr.val('');
+
     });
 
 
@@ -264,16 +320,39 @@ $(document).ready(function() {
                   </div>
 
                   <div class="form-group">
-                    <label class="control-label col-xs-4">Device Name: </label>
+                    <label class="control-label col-xs-4">Waiting Queue: </label>
                     <div class="col-xs-8">
-                      <input id="deviceName" class="form-control" required>
+                      <select id="regQueue" class="form-control" onchange="changeQueueSelect()">
+                        
+                      </select>
+                    </div> 
+                  </div>
+
+                  <div class="form-group">
+                    <label class="control-label col-xs-4">hostname: </label>
+                    <div class="col-xs-8">
+                      <input id="hostname" class="form-control" required readonly>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="control-label col-xs-4">OS: </label>
+                    <div class="col-xs-8">
+                      <input id="osname" class="form-control" required readonly>
+                    </div>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label class="control-label col-xs-4">the number of cpus: </label>
+                    <div class="col-xs-8">
+                      <input id="cpus" class="form-control" required readonly>
                     </div>
                   </div>
   
                   <div class="form-group">
                     <label class="control-label col-xs-4">Ip Address: </label>
                     <div class="col-xs-8">
-                      <input id="ipAddr" class="form-control" required>
+                      <input id="ipAddr" class="form-control" required readonly>
                     </div>
                   </div>
   
