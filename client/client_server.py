@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 import paho.mqtt.client as mqtt
-import os , platform , socket
+import os , platform , socket, requests
 import subprocess
 import json
 from config import MQTT_CONFIG, commandList
 
 deviceName = MQTT_CONFIG['deviceName']
 client_path = os.path.dirname(os.path.abspath(__file__))+'/client_publish.py'
+url = MQTT_CONFIG['app_url']+"/registerQueue"
 #print(client_path)
 
 def on_connect(client, userdata, flags, rc):
@@ -17,7 +18,7 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_disconnect(client, userdata, flags, rc=0):
-    print(str(rc))
+    print("Disconnected"+ client.values +str(rc))
 
 
 def on_subscribe(client, userdata, mid, granted_qos):
@@ -50,13 +51,12 @@ def runCmd(command):
         os.system("python3 "+client_path)
     else:
         print("Wrong command")
-    
-    
-print(os.cpu_count())
-print(os.uname())
-print(platform.processor())
-print(socket.gethostname())
-print(socket.gethostbyname(socket.gethostname()))
+
+# request
+data = {'name': deviceName+'7', 'ipv4Addr': '192.182.12.3', 'cpu_count':os.cpu_count(), 'os_system':platform.system(), 'hostname':socket.gethostname()}
+headers = {'Content-Type': 'application/json; charset=utf-8'}
+r = requests.post(url, data = json.dumps(data), headers=headers)    
+
 #print(str(round(psutil.virtual_memory().total / (1024.0 **3)))+" GB")
 
 # 새로운 클라이언트 생성

@@ -11,14 +11,12 @@
 <script type="text/javascript" charset="utf-8">
 
 function changeSelect(){
-    var deviceList = $('#qos');
     var topic = $('#topic');
     var sub_topic = $('#subscribe_topic');
-    var selectVal = $('#qos option:selected').val();
+    var selectVal = $('#pubDevice option:selected').val();
     
     topic.val(selectVal);
     sub_topic.val(selectVal+"_result");
-    //console.log(selectVal);
 }
 
 function changeMsg(){
@@ -49,14 +47,13 @@ $(document).ready(function() {
 
     function printList(){
         try{
-
             if(httpRequest.readyState === XMLHttpRequest.DONE){
 
                 if(httpRequest.status === 200){
 
                     var list = JSON.parse(httpRequest.responseText)
                     //console.log(list.length);
-                    var deviceList = $('#qos');
+                    var deviceList = $('#pubDevice');
                     deviceList.empty();
                     for(var count = 0; count < list.length; ++count){    
                         console.log(list[count]);
@@ -71,7 +68,8 @@ $(document).ready(function() {
             }
         }
         catch(e){
-
+          console.log(e.message);
+          //print(e.message);
         }
     }
 
@@ -79,18 +77,13 @@ $(document).ready(function() {
     $('#publish').click(function(event) {
       var topic = $('#topic').val();
       var message = $('#message').val()+' '+$('#optionMessage').val();
-      //console.log(message);
-      //var qos = $('#qos').val();
       var data = '{"topic": "' + topic + '", "message": "' + message + '"}';
-      //console.log(data);
       socket.emit('publish', data=data);
     });
 
     $('#subscribe').click(function(event) {
       var topic = $('#subscribe_topic').val();
-      //var qos = $('#subscribe_qos').val();
       var data = '{"topic": "' + topic + '"}';
-      //console.log(data);
       socket.emit('subscribe', data=data);
       $('#subscribe').hide();
       $('#unsubscribe').show();
@@ -175,7 +168,7 @@ $(document).ready(function() {
                 <div class="form-group">
                   <label class="control-label col-xs-4">Device: </label>
                   <div class="col-xs-8">
-                    <select id="qos" class="form-control" onchange=" changeSelect()">
+                    <select id="pubDevice" class="form-control" onchange=" changeSelect()">
                       
                     </select>
                   </div> 

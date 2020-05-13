@@ -7,7 +7,8 @@ MQTT_CONFIG={
     'mqtt_username':'mishuni',
     'mqtt_password':'1234',
     'mqtt_keepalive':5,
-    'mqtt_tls_enabled':False
+    'mqtt_tls_enabled':False,
+    'app_url':'http://127.0.0.1:5000'
 }
 
 DB_CONFIG={
@@ -26,5 +27,5 @@ commandList = {
     "images":['docker','images'],
     "stop":['docker','stop'],
     "remove":['docker','rm'] 
-    }
+}
 

@@ -15,7 +15,7 @@ from client.config import *
 
 # DB
 from database.db import initialize_db
-from database.models import Device
+from database.models import Device,RegisterQueue
 
 app = Flask(__name__)
 
@@ -41,7 +41,7 @@ app.config['MQTT_TLS_ENABLED'] = MQTT_CONFIG['mqtt_tls_enabled']
 # app.config['MQTT_TLS_INSECURE'] = True
 # app.config['MQTT_TLS_CA_CERTS'] = 'ca.crt'
 
-mqtt = Mqtt(app)
+mqtt = Mqtt(app,mqtt_logging= True)
 socketio = SocketIO(app)
 bootstrap = Bootstrap(app)
 
@@ -70,12 +70,17 @@ def get_device(id):
     device = Device.objects.get(id=id).to_json()
     return Response(device, mimetype="application/json", status=200)
 
-@app.route('/register', methods=['POST'])
-def add_device():
-    body = request.get_json()
-    device = Device(**data).save()
-    deviceName = device.deviceName
-    return {'deviceName':str(deviceName)}, 200
+@app.route('/registerQueue', methods=['GET'])
+def get_register_devices():
+    devices = RegisterQueue.objects().to_json()
+    return Response(devices, mimetype="application/json", status=200)
+
+@app.route('/registerQueue', methods=['POST'])
+def add_register_device():
+    data = request.get_json()
+    print(data)
+    device = RegisterQueue(**data).save()
+    return Response(device, mimetype="application/json", status=200)
 
 
 ### socket
@@ -104,7 +109,7 @@ def handle_unsubscribe_all():
 @mqtt.on_message()
 def handle_mqtt_message(client, userdata, message):
     original = message.payload.decode()
-    print("original: ",original)
+    #print("original: ",original)
 
     data = dict(
         topic=message.topic,
@@ -113,6 +118,9 @@ def handle_mqtt_message(client, userdata, message):
    
     # print(os.system('docker -H 192.168.0.62:2376 ps -a'))
     socketio.emit('mqtt_message', data=data)
+# @mqtt.on_connect()
+# def handle_mqtt_connect(client, userdata):
+#     print("connected")
 
 @mqtt.on_log()
 def handle_logging(client, userdata, level, buf):

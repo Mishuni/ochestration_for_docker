@@ -18,4 +18,6 @@ class RegisterQueue(db.Document):
     name = db.StringField(required=True, unique=True)
     ipv4Addr = db.StringField(required=True)
     register = db.DateTimeField(default=datetime.datetime.utcnow)
-    
+    cpu_count = db.IntField()
+    os_system = db.StringField()
+    hostname = db.StringField()
