@@ -1,7 +1,7 @@
 # config.py
 
 MQTT_CONFIG={
-    'deviceName':'miseon',
+    'deviceName':'local11',
     'mqtt_broker_url': '127.0.0.1',# 'broker.hivemq.com',
     'mqtt_broker_port':1883,
     'mqtt_username':'mishuni',

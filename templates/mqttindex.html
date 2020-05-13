@@ -99,6 +99,7 @@ function printListDetail(url,httpRequest){
     }
     else if(url.indexOf("/removeQueue/")>0){
       getList("registerQueue",httpRequest2);
+      getList("devices",httpRequest1);
     }
 }
 
@@ -160,7 +161,6 @@ $(document).ready(function() {
       console.log(data);
       getList("removeQueue/"+name.val(),httpRequest4);
       socket.emit('register', data=data);
-      getList("devices",httpRequest1);
       
       name.val('');
       hostname.val('');

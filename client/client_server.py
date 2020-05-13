@@ -53,7 +53,7 @@ def runCmd(command):
         print("Wrong command")
 
 # request
-data = {'name': deviceName+'7', 'ipv4Addr': '192.182.12.3', 'cpu_count':os.cpu_count(), 'os_system':platform.system(), 'hostname':socket.gethostname()}
+data = {'name': deviceName, 'ipv4Addr': '123.214.186.236', 'cpu_count':os.cpu_count(), 'os_system':platform.system(), 'hostname':socket.gethostname()}
 headers = {'Content-Type': 'application/json; charset=utf-8'}
 r = requests.post(url, data = json.dumps(data), headers=headers)    
 
