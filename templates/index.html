@@ -3,47 +3,80 @@
     <head lang="en">
 
         <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.6/socket.io.min.js"></script>
-
-        <script type="text/javascript">
-        
-            $(document).ready(function(){
-                console.log("http://"+document.domain+":"+location.port+"/mynamespace");
-                var socket = io.connect("http://"+document.domain+":"+location.port+"/mynamespace");
-                socket.on('response',function(msg){
-                    $("#received").append('<p> '+msg.username+": "+msg.data+"</p>");
-                });
-                 
-                $("form#broadcast").submit(function(event){
-                    if($("#input-data").val()==""){
-                        return false;
-                    }
-                    socket.emit("request",{data: $('#input-data').val()});
-                    $("#input-data").val("");
-                    return false;
-                });
-            });
-        
-        </script>
-        <meta charset="UTF-8">
-        <title>socket</title>
 
     </head>
 
     <body>
 
-        <h1>Received</h1>
-        <div id="received">
+    <div class="container-fluid">
+        <h1>Edge Microservice Deployment F/W</h1>
+
+        <h3 class="panel-title">Publish MQTT Message</h3>
+        <label class="control-label col-xs-4">Topic: </label>
+        <input id="topic" class="form-control" readonly>
+
+        <label class="control-label col-xs-4">Device: </label>
+        <select id="pubDevice" class="form-control" onchange=" changeSelect()"></select>
+
+        <label class="control-label col-xs-4">Message: </label>
+        <select id="message" class="form-control" onchange=" changeMsg()">
+            <option value="status">status</option>
+            <option value="pull">pull</option>
+            <option value="images">images</option>
+            <option value="stop">stop</option>
+            <option value="remove">remove</option>
+            <option value="run">run</option>
+        </select>
+        <label class="control-label col-xs-4">Add Message: </label>
+        <input id="optionMessage" class="form-control" >
+
+        <button id="publish" class="btn btn-primary">Publish</button>
 
 
-        </div>
+        <h3 class="panel-title">Subscribe MQTT Messages</h3>
 
-        <form id="broadcast" action="#">
 
-            <input id="input-data" type="text" />
-            <input type="submit" />
+        <label class="control-label col-xs-4">Topic:</label>
 
-        </form>
+        <input id="subscribe_topic" class="form-control" readonly>
 
+        <button id="subscribe" class="btn btn-primary">Subscribe</button>
+        <button id="unsubscribe" class="btn btn-default" style="display: none;" >Unsubscribe</button>
+
+
+        <label class="control-label col-xs-4">Messages:</label>
+
+        <textarea id="subscribe_messages" class="form-control" rows=10></textarea>
+
+
+
+        <h3 class="panel-title">Register Ochestration Device</h3>
+
+        <label class="control-label col-xs-4">Device Number: </label>
+
+        <input id="deviceNum" class="form-control" required readonly>
+
+        <label class="control-label col-xs-4">Waiting Queue: </label>
+        <select id="regQueue" class="form-control" onchange="changeQueueSelect()">
+
+                                            </select>
+
+
+        <label class="control-label col-xs-4">hostname: </label>
+
+        <input id="hostname" class="form-control" required readonly>
+
+        <label class="control-label col-xs-4">OS: </label>
+        <input id="osname" class="form-control" required readonly>
+
+        <label class="control-label col-xs-4">the number of cpus: </label>
+        <input id="cpus" class="form-control" required readonly>
+
+        <label class="control-label col-xs-4">Ip Address: </label>
+        <input id="ipAddr" class="form-control" required readonly>
+
+        <button id="register" class="btn btn-primary">Register</button>
+
+    </div>
     </body>
 </html>
