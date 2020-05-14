@@ -71,7 +71,7 @@ function printListDetail(url,httpRequest){
     var deviceNum = $('#deviceNum');
     deviceNum.val(list.length+1);
     changeSelect();
-    }
+  }
   
   else if(url.endsWith("registerQueue")){
     var list = JSON.parse(httpRequest.responseText);
@@ -83,24 +83,24 @@ function printListDetail(url,httpRequest){
       +list[count]["name"]+"</option>");
       }
     //changeSelect();
-    }
+  }
     // GET 
-    else if(url.indexOf("/registerQueue/")>0){
-      // hostname osname cpus ipAddr 
-      var list = JSON.parse(httpRequest.responseText);
-      var hostname = $('#hostname');
-      hostname.val(list["hostname"]);
-      var osname = $('#osname');
-      osname.val(list["os_system"]);
-      var cpus = $('#cpus');
-      cpus.val(list["cpu_count"]);
-      var ipAddr = $('#ipAddr');
-      ipAddr.val(list["ipv4Addr"]);
-    }
-    else if(url.indexOf("/removeQueue/")>0){
-      getList("registerQueue",httpRequest2);
-      getList("devices",httpRequest1);
-    }
+  else if(url.indexOf("/registerQueue/")>0){
+    // hostname osname cpus ipAddr 
+    var list = JSON.parse(httpRequest.responseText);
+    var hostname = $('#hostname');
+    hostname.val(list["hostname"]);
+    var osname = $('#osname');
+    osname.val(list["os_system"]);
+    var cpus = $('#cpus');
+    cpus.val(list["cpu_count"]);
+    var ipAddr = $('#ipAddr');
+    ipAddr.val(list["ipv4Addr"]);
+  }
+  else if(url.indexOf("/removeQueue/")>0){
+    getList("registerQueue",httpRequest2);
+    getList("devices",httpRequest1);
+  }
 }
 
 let httpRequest1;
@@ -118,7 +118,6 @@ $(document).ready(function() {
     // $.getJSON('http://Gd.geobytes.com/GetCityDetails?callback=?', function(data) {
     // console.log(JSON.stringify(data, null, 2));
     // });
-
     
     $('#publish').click(function(event) {
       var topic = $('#topic').val();

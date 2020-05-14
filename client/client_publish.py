@@ -21,8 +21,7 @@ def on_publish(client, userdata, mid):
 if __name__ == '__main__':
     f = open("result.txt", 'r')
     data = f.read()
-    print(data)
-    #print(type(data))
+    #print(data)
     f.close()
     # 새로운 클라이언트 생성
     client = mqtt.Client()
@@ -32,7 +31,6 @@ if __name__ == '__main__':
     client.on_publish = on_publish
     #client.connect('broker.hivemq.com', 1883)
     client.connect(MQTT_CONFIG['mqtt_broker_url'],MQTT_CONFIG['mqtt_broker_port'])
-    
     client.loop_start()
     client.publish(MQTT_CONFIG['deviceName']+'_result',  data, 1)
     client.loop_stop()

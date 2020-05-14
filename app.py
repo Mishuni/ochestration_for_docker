@@ -11,7 +11,10 @@ from flask import Flask, render_template, request, Response, jsonify
 from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
 from flask_bootstrap import Bootstrap
+
+# Config
 from client.config import *
+from appconfig import *
 
 # DB
 from database.db import initialize_db
@@ -65,9 +68,9 @@ def delete_allDevices():
     Device.objects().delete()
     return Response(Device.objects().to_json(), mimetype="application/json", status=200) 
 
-@app.route('/devices/<id>', methods=['GET'])
-def get_device(id):
-    device = Device.objects.get(id=id).to_json()
+@app.route('/devices/<name>', methods=['GET'])
+def get_device(name):
+    device = Device.objects.get(name=name).to_json()
     return Response(device, mimetype="application/json", status=200)
 
 @app.route('/registerQueue', methods=['GET'])
