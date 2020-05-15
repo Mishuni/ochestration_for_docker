@@ -169,7 +169,6 @@ $(document).ready(function() {
 
     });
 
-
     socket.on('mqtt_message', function(data) {
       var topic = data['topic'];
       var sub_topic = $('#subscribe_topic').val();
