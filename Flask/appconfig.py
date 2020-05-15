@@ -1,7 +1,5 @@
-# config.py
 
 MQTT_CONFIG={
-    'deviceName':'teamgold',
     'mqtt_broker_url': '192.168.1.78',# 'broker.hivemq.com',
     'mqtt_broker_port':1883,
     'mqtt_username':'mishuni',
@@ -11,12 +9,12 @@ MQTT_CONFIG={
     'app_url':'http://192.168.1.78:5000'
 }
 
-commandList = {
-    "status":['docker','ps','-a'],
-    "pull":['docker','pull'],
-    "run":['docker','run'],
-    "images":['docker','images'],
-    "stop":['docker','stop'],
-    "remove":['docker','rm'] 
+
+DB_CONFIG={
+    'host': 'mongodb://localhost/cluster',
 }
 
+APP_CONFIG={
+    'secret':'my secret key',
+    'templates_auto_reload':True
+}
