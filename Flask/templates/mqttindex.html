@@ -25,7 +25,6 @@ function changeSelect(){
   var selectVal = $('#pubDevice option:selected').val();
   topic.val(selectVal);
   var sub = (selectVal=='')? '':selectVal+"_result";
-  console.log(selectVal=='');
   sub_topic.val(sub);
 }
 
