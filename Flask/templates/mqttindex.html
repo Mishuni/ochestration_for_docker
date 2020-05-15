@@ -3,6 +3,15 @@
 
 {% block styles %}
 {{ super() }}
+<style>
+
+  #registerArea{
+    position: relative;
+    bottom: 400px;
+
+  }
+
+</style>
 {% endblock %}
 
 {% block scripts %}
@@ -15,7 +24,9 @@ function changeSelect(){
   var sub_topic = $('#subscribe_topic');
   var selectVal = $('#pubDevice option:selected').val();
   topic.val(selectVal);
-  sub_topic.val(selectVal+"_result");
+  var sub = (selectVal=='')? '':selectVal+"_result";
+  console.log(selectVal=='');
+  sub_topic.val(sub);
 }
 
 function changeQueueSelect(){
@@ -63,6 +74,7 @@ function printListDetail(url,httpRequest){
     var list = JSON.parse(httpRequest.responseText);
     var deviceList = $('#pubDevice');
     deviceList.empty();
+    deviceList.append("<option value='' selected disabled >Select a device</option>");
     for(var count = 0; count < list.length; ++count){
       //console.log(list[count]);
       deviceList.append("<option value='"+list[count]["name"]+"'>"
@@ -195,13 +207,16 @@ $(document).ready(function() {
 
 
 {% block content %}
+
 <div class="container-fluid">
   <div class="row">
     <div class="col-xs-12">
       <h1>Edge Microservice Deployment F/W</h1>
     </div>
   </div>
+
   <div class="row">
+    <!-- Publish Start -->
     <div class="col-xs-6">
       <div class="panel panel-default">
         <div class="panel-heading">
@@ -262,8 +277,9 @@ $(document).ready(function() {
         </div>
       </div>
     </div>
-    
+    <!-- Publish End -->
 
+    <!-- Subscribe Start -->
     <div class="col-xs-6">
       <div class="panel panel-default">
         <div class="panel-heading">
@@ -274,23 +290,24 @@ $(document).ready(function() {
             <div class="row">
               <div class="form-horizontal">
                 <div class="form-group">
-                  <label class="control-label col-xs-4">Topic:</label>
-                  <div class="col-xs-8">
+                  <label class="control-label col-xs-2">Topic:</label>
+                  <div class="col-xs-4">
                     <input id="subscribe_topic" class="form-control" readonly>
                   </div>
                 </div>
 
                 <div class="form-group">
-                  <div class="col-xs-8 col-xs-offset-4">
+                  <div class="col-xs-8 col-xs-offset-2">
                     <button id="subscribe" class="btn btn-primary">Subscribe</button>
                     <button id="unsubscribe" class="btn btn-default" style="display: none;" >Unsubscribe</button>
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="control-label col-xs-4">Messages:</label>
-                  <div class="col-xs-12">
-                    <textarea id="subscribe_messages" class="form-control" rows=15></textarea>
-                  </div>
+                  <br><label class="control-label col-xs-2">Result</label>
+                  
+                    <label class="control-label col-xs-10">
+                    <textarea id="subscribe_messages" class="form-control" rows=25></textarea></label>
+                  
                 </div>
               </div>
             </div>
@@ -298,9 +315,10 @@ $(document).ready(function() {
         </div>
       </div>
     </div>
+    <!-- Subscribe End -->
 
-
-    <div class="col-xs-6">
+    <!-- Register Start -->
+    <div class="col-xs-6" id="registerArea">
         <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title">Register Ochestration Device</h3>
@@ -366,7 +384,8 @@ $(document).ready(function() {
           </div>
         </div>
       </div>
-      
+      <!-- Register End -->
+
   </div>
 </div>
 {% endblock %}
