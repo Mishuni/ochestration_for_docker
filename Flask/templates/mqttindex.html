@@ -134,6 +134,7 @@ $(document).ready(function() {
       var topic = $('#topic').val();
       var message = $('#message').val()+' '+$('#optionMessage').val();
       var data = '{"topic": "' + topic + '", "message": "' + message + '"}';
+      console.log(data);
       socket.emit('publish', data=data);
     });
 

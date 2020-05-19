@@ -34,8 +34,9 @@ $ sudo docker run -p 1883:1883 --name mosquitto -d ansi/mosquitto
 #### mongoDB start
 
 ```sh
+$ sudo netstat -tulpn | grep LISTEN
+$ sudo kill -9 {number}
 $ sudo systemctl start mongod
-
 ```
 
 

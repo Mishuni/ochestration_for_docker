@@ -9,7 +9,7 @@ deviceName = MQTT_CONFIG['deviceName']
 client_path = os.path.dirname(os.path.abspath(__file__))+'/client_publish.py'
 
 import socket
-print(socket.gethostbyaddr(socket.gethostname()))
+print(socket.gethostbyname(socket.getfqdn()))
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
@@ -37,7 +37,7 @@ def runCmd(command):
     if(order in commandList):
         cmd = commandList.get(order).copy()
         for i in range(1,len(command)):
-            if(command[i]==' '):
+            if(command[i]==' ' or command[i]=='' or command[i]=='/'):
                 continue
             cmd.append(command[i])
         print(cmd)
