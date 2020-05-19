@@ -8,6 +8,8 @@ from config import *
 deviceName = MQTT_CONFIG['deviceName']
 client_path = os.path.dirname(os.path.abspath(__file__))+'/client_publish.py'
 
+import socket
+print(socket.gethostbyaddr(socket.gethostname()))
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
@@ -42,7 +44,7 @@ def runCmd(command):
         fd_popen = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout 
         data = str(fd_popen.read().strip())
         fd_popen.close()
-        print("data: ",data)
+        #print("data: ",data)
         data=data[2:-1].split('\\n')
 
         f = open("result.txt", 'w')
@@ -64,7 +66,7 @@ def checkDuplicateWithQueue(data):
         del result['register']
         if(result!=data):
             print("The 'deviceName' is duplicated with another device in a Queue,") 
-            print("you have to change the value of 'deviceName' in a file named confy.py")
+            print("you have to change the value of 'deviceName' in a file named config.py")
             sys.exit()
     
     except simplejson.errors.JSONDecodeError as e:
@@ -85,7 +87,7 @@ try:
     del result['register']
     if(result!=data):
         print("The 'deviceName' is duplicated with another device that is already registered,") 
-        print("you have to change the value of 'deviceName' in a file named confy.py")
+        print("you have to change the value of 'deviceName' in a file named config.py")
         sys.exit()
 
 except simplejson.errors.JSONDecodeError as e:

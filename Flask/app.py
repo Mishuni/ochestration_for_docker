@@ -38,10 +38,10 @@ app.config['MQTT_KEEPALIVE'] = MQTT_CONFIG['mqtt_keepalive']
 app.config['MQTT_TLS_ENABLED'] = MQTT_CONFIG['mqtt_tls_enabled']
 
 # Parameters for SSL enabled
-# app.config['MQTT_BROKER_PORT'] = 8883
-# app.config['MQTT_TLS_ENABLED'] = True
-# app.config['MQTT_TLS_INSECURE'] = True
-# app.config['MQTT_TLS_CA_CERTS'] = 'ca.crt'
+#app.config['MQTT_BROKER_PORT'] = 8883
+#app.config['MQTT_TLS_ENABLED'] = True
+#app.config['MQTT_TLS_INSECURE'] = True
+#app.config['MQTT_TLS_CA_CERTS'] = 'ca.crt'
 
 mqtt = Mqtt(app,mqtt_logging= True)
 socketio = SocketIO(app)
@@ -127,13 +127,15 @@ def handle_mqtt_message(client, userdata, message):
         topic=message.topic,
         payload=str(original)
     )
-   
     
     socketio.emit('mqtt_message', data=data)
 
 @mqtt.on_log()
 def handle_logging(client, userdata, level, buf):
-    print(level, buf)
+    if level == MQTT_LOG_ERR:
+        print('Error: {}'.format(buf))
+    else:
+        print(level, buf)
 
 
 if __name__ == '__main__':
@@ -143,4 +145,4 @@ if __name__ == '__main__':
 # print(os.system('docker -H 192.168.0.62:2376 ps -a'))
 # @mqtt.on_connect()
 # def handle_mqtt_connect(client, userdata):
-#     print("connected")
+#      print("connected")

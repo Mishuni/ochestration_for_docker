@@ -168,7 +168,6 @@ $(document).ready(function() {
       var data = '{"id": "' + id + '", "ipv4Addr": "' + ipAddr.val() + '", "name": "'+ name.val()
       + '", "hostname": "'+ hostname.val()+ '", "cpu_count": "'+ cpus.val() 
       + '", "os_system": "'+ osname.val()+ '"}';
-      console.log(data);
       getList("removeQueue/"+name.val(),httpRequest4);
       socket.emit('register', data=data);
       
@@ -247,9 +246,9 @@ $(document).ready(function() {
                   <div class="col-xs-8">
                     <select id="message" class="form-control" onchange=" changeMsg()">
                       <option value="status">status</option>
+                      <option value="images">images</option>
                       <option value="pull">pull</option>
                       <option value="run">run</option>
-                      <option value="images">images</option>
                       <option value="stop">stop</option>
                       <option value="remove">remove</option>
                     </select>
