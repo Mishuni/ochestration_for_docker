@@ -112,7 +112,7 @@ iframe {
 }
 
 .wrap-table100 {
-  width: 960px;
+  width: 850px;
   border-radius: 10px;
   overflow: hidden;
 }
@@ -180,7 +180,7 @@ iframe {
 
 .row .cell {
   font-family: Poppins-Regular;
-  font-size: 15px;
+  font-size: 12px;
   color: #666666;
   line-height: 1.2;
   font-weight: unset !important;
@@ -192,7 +192,7 @@ iframe {
 
 .row.header .cell {
   font-family: Poppins-Regular;
-  font-size: 18px;
+  font-size: 12px;
   color: #fff;
   line-height: 1.2;
   font-weight: unset !important;
@@ -202,20 +202,27 @@ iframe {
 }
 
 .row .cell:nth-child(1) {
-  width: 360px;
-  padding-left: 40px;
+  width: 15%
 }
 
 .row .cell:nth-child(2) {
-  width: 160px;
+  width: 15%;
 }
 
 .row .cell:nth-child(3) {
-  width: 250px;
+  width: 15%;
 }
-
 .row .cell:nth-child(4) {
-  width: 190px;
+  width: 15%;
+}
+.row .cell:nth-child(5) {
+  width: 20%;
+}
+.row .cell:nth-child(6) {
+  width: 10%;
+}
+.row .cell:nth-child(7) {
+  width: 10%;
 }
 
 
@@ -249,7 +256,7 @@ iframe {
   
   .row .cell {
     font-family: Poppins-Regular;
-    font-size: 18px;
+    font-size: 12px;
     color: #555555;
     line-height: 1.2;
     font-weight: unset !important;
