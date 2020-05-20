@@ -185,10 +185,13 @@ $(document).ready(function() {
       var sub_topic = $('#subscribe_topic').val();
       if(sub_topic == topic){
         var text = data['payload'];
-        //var text3 = text.split("\\n");
-        //console.log(text3);
-        var $textarea = $('#subscribe_messages');
+        console.log(text);
+        var text3 = text.split("        ");
+        console.log(text3);
 
+        
+
+        var $textarea = $('#subscribe_messages');
         $textarea.val($textarea.val() + "------------------------------------" + '\n');
         $textarea.val($textarea.val() + text + '\n');
         // for(var count = 0; count < text3.length; count++){  

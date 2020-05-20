@@ -132,7 +132,7 @@ def handle_mqtt_message(client, userdata, message):
 
 @mqtt.on_log()
 def handle_logging(client, userdata, level, buf):
-    if level == MQTT_LOG_ERR:
+    if level == 'MQTT_LOG_ERR':
         print('Error: {}'.format(buf))
     else:
         print(level, buf)
