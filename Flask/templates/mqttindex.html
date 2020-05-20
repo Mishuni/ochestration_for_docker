@@ -3,117 +3,15 @@
 
 {% block styles %}
 {{ super() }}
-<style>
 
-  #registerArea{
-    position: relative;
-    bottom: 400px;
-
-  }
-
-</style>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+<script src="{{ url_for('static', filename='js/select.js') }}"></script>
 <script type="text/javascript" charset="utf-8">
-
-function changeSelect(){
-  var topic = $('#topic');
-  var sub_topic = $('#subscribe_topic');
-  var selectVal = $('#pubDevice option:selected').val();
-  topic.val(selectVal);
-  var sub = (selectVal=='')? '':selectVal+"_result";
-  sub_topic.val(sub);
-}
-
-function changeQueueSelect(){
-  var selectVal = $('#regQueue option:selected').val();
-  getList("registerQueue/"+selectVal,httpRequest3);
-}
-
-function changeMsg(){
-  var option = $('#optionMessage').val('');
-}
-
-function getList(requestName,httpRequest){
-  httpRequest = new XMLHttpRequest();
-  httpRequest.onreadystatechange = function(){
-    printList(httpRequest);
-  };
-
-  if(!httpRequest){
-      console.log("Can't make XMLHTTP instance");
-      return false;
-  }
-
-  httpRequest.open('GET',requestName);
-  httpRequest.send();
-}
-
-function printList(httpRequest){
-  try{
-      if(httpRequest.readyState === XMLHttpRequest.DONE){
-          if(httpRequest.status === 200){
-            console.log(httpRequest.responseURL);
-            var url = httpRequest.responseURL;
-            printListDetail(url,httpRequest);
-          }
-      }
-  }
-  catch(e){
-    console.log(e.message);
-    //print(e.message);
-  }
-}
-
-function printListDetail(url,httpRequest){
-  if(url.endsWith("devices")){
-    var list = JSON.parse(httpRequest.responseText);
-    var deviceList = $('#pubDevice');
-    deviceList.empty();
-    deviceList.append("<option value='' selected disabled >Select a device</option>");
-    for(var count = 0; count < list.length; ++count){
-      //console.log(list[count]);
-      deviceList.append("<option value='"+list[count]["name"]+"'>"
-      +list[count]["name"]+'_'+list[count]["_id"]+"</option>");
-    }
-    var deviceNum = $('#deviceNum');
-    deviceNum.val(list.length+1);
-    changeSelect();
-  }
-  
-  else if(url.endsWith("registerQueue")){
-    var list = JSON.parse(httpRequest.responseText);
-    var deviceList = $('#regQueue');
-    deviceList.empty();
-    deviceList.append("<option value='' selected disabled >Select a device</option>");
-    for(var count = 0; count < list.length; ++count){
-      deviceList.append("<option value='"+list[count]["name"]+"'>"
-      +list[count]["name"]+"</option>");
-      }
-    //changeSelect();
-  }
-    // GET 
-  else if(url.indexOf("/registerQueue/")>0){
-    // hostname osname cpus ipAddr 
-    var list = JSON.parse(httpRequest.responseText);
-    var hostname = $('#hostname');
-    hostname.val(list["hostname"]);
-    var osname = $('#osname');
-    osname.val(list["os_system"]);
-    var cpus = $('#cpus');
-    cpus.val(list["cpu_count"]);
-    var ipAddr = $('#ipAddr');
-    ipAddr.val(list["ipv4Addr"]);
-  }
-  else if(url.indexOf("/removeQueue/")>0){
-    getList("registerQueue",httpRequest2);
-    getList("devices",httpRequest1);
-  }
-}
-
 let httpRequest1;
 let httpRequest2;
 let httpRequest3;
@@ -180,19 +78,28 @@ $(document).ready(function() {
 
     });
 
+
     socket.on('mqtt_message', function(data) {
       var topic = data['topic'];
       var sub_topic = $('#subscribe_topic').val();
+      
       if(sub_topic == topic){
         var text = data['payload'];
-        console.log(text);
-        var text3 = text.split("        ");
-        console.log(text3);
+        if(text == "\n"){
+          text = "The command line has a problem. \n"
+        }
+        else{
+          
+          text=text.replace(/minutes/gi,"m");
+          text=text.replace(/hours/gi,"h");
+          text=text.replace(/seconds/gi,"s");
+          text=text.replace(/        /gi,"    ");
 
-        
+        }
+        console.log(text);
 
         var $textarea = $('#subscribe_messages');
-        $textarea.val($textarea.val() + "------------------------------------" + '\n');
+        $textarea.val($textarea.val() + "=========  The Result =========" + '\n');
         $textarea.val($textarea.val() + text + '\n');
         // for(var count = 0; count < text3.length; count++){  
         //   $textarea.val($textarea.val() + text3[count] + '\n');
@@ -213,7 +120,7 @@ $(document).ready(function() {
 <div class="container-fluid">
   <div class="row">
     <div class="col-xs-12">
-      <h1>Edge Microservice Deployment F/W</h1>
+      <h1>Edge Microservice Deployment F/W</h1><br>
     </div>
   </div>
 
@@ -308,7 +215,7 @@ $(document).ready(function() {
                   <br><label class="control-label col-xs-2">Result</label>
                   
                     <label class="control-label col-xs-10">
-                    <textarea id="subscribe_messages" class="form-control" rows=25></textarea></label>
+                    <textarea id="subscribe_messages" class="form-control" rows=20 readonly></textarea></label>
                   
                 </div>
               </div>
