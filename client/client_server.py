@@ -8,8 +8,8 @@ from config import *
 deviceName = MQTT_CONFIG['deviceName']
 client_path = os.path.dirname(os.path.abspath(__file__))+'/client_publish.py'
 
-import socket
-print(socket.gethostbyname(socket.getfqdn()))
+#import socket
+#print(socket.gethostbyname(socket.getfqdn()))
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
@@ -93,13 +93,11 @@ try:
 except simplejson.errors.JSONDecodeError as e:
     checkDuplicateWithQueue(data)
 
-# 새로운 클라이언트 생성
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_disconnect = on_disconnect
 client.on_subscribe = on_subscribe
 client.on_message = on_message
-# address : localhost, port: 1883 에 연결
 client.connect(MQTT_CONFIG['mqtt_broker_url'],MQTT_CONFIG['mqtt_broker_port'])
 # topic subscribe
 client.subscribe(deviceName, 1)
