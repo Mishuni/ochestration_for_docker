@@ -39,7 +39,7 @@ $(document).ready(function() {
       }
 
       var data = '{"topic": "' + topic + '", "message": "' + message + '"}';
-      console.log(data);
+      //console.log(data);
       socket.emit('publish', data=data);
     });
 
@@ -96,21 +96,14 @@ $(document).ready(function() {
           text = "The command line has a problem. \n"
         }
         else{
-          // text2=text.replace(/\n/gi,"  ");
-          // text2=text2.replace(/           /gi,"  ");
-          // text2=text2.replace(/          /gi,"  ");
-          // text2=text2.replace(/     /gi,"  ");
-          // text2=text2.replace(/    /gi,"  ");
-          // text2=text2.replace(/   /gi,"  ");
-          // text2=text2.split('  ');
-          // console.log(text2);
+
           text=text.replace(/minutes/gi,"m");
           text=text.replace(/hours/gi,"h");
           text=text.replace(/seconds/gi,"s");
           text=text.replace(/        /gi,"    ");
 
         }
-        console.log(text);
+        //console.log(text);
 
         var $textarea = $('#subscribe_messages');
         $textarea.val($textarea.val() + "=========  The Result =========" + '\n');
