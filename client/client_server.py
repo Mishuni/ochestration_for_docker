@@ -34,6 +34,10 @@ def on_message(client, userdata, msg):
 
 def runCmd(command):
     order = command[0]
+    if(order=="remove"):
+        if(command[len(command)-1]=="image"):
+            order="removeImg"
+        del command[len(command)-1]
     if(order in commandList):
         cmd = commandList.get(order).copy()
         for i in range(1,len(command)):

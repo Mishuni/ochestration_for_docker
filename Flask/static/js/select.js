@@ -13,7 +13,14 @@ function changeSelect(){
   }
   
   function changeMsg(){
-    var option = $('#optionMessage').val('');
+    $('#optionMessage').val('');
+    var option = $('#message').val();
+    if(option==='remove'){
+      var objectSel = $('#object').removeAttr('disabled'); 
+    }
+    else{
+      var objectSel = $('#object').attr("disabled","disabled"); 
+    }
   }
   
   function getList(requestName,httpRequest){

@@ -30,7 +30,14 @@ $(document).ready(function() {
     
     $('#publish').click(function(event) {
       var topic = $('#topic').val();
-      var message = $('#message').val()+' '+$('#optionMessage').val();
+      var message = $('#message').val()
+      if(message==="remove"){
+        message = message+' '+$('#optionMessage').val()+" "+$('#object').val();
+      }
+      else{
+        message = message+' '+$('#optionMessage').val();
+      }
+
       var data = '{"topic": "' + topic + '", "message": "' + message + '"}';
       console.log(data);
       socket.emit('publish', data=data);
@@ -169,6 +176,16 @@ $(document).ready(function() {
                       <option value="run">run</option>
                       <option value="stop">stop</option>
                       <option value="remove">remove</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-xs-4">Object: </label>
+                  <div class="col-xs-8">
+                    <select id="object" class="form-control" disabled>
+                      <option value="status">container</option>
+                      <option value="image">image</option>
                     </select>
                   </div>
                 </div>

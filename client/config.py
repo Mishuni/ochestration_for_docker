@@ -15,6 +15,7 @@ commandList = {
     "run":['docker','run'],
     "images":['docker','images'],
     "stop":['docker','stop'],
-    "remove":['docker','rm'] 
+    "remove":['docker','rm'],
+    "removeImg":['docker','rmi']
 }
 
