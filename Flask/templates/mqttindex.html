@@ -15,7 +15,6 @@
 let httpRequest1;
 let httpRequest2;
 let httpRequest3;
-let httpRequest4;
 
 $(document).ready(function() {
     var socket = io.connect('http://' + document.domain + ':' + location.port);
@@ -57,7 +56,7 @@ $(document).ready(function() {
       socket.emit('unsubscribe_all');
       $('#subscribe').show();
       $('#unsubscribe').hide();
-      $('#subscribe_topic').prop('readonly', false);
+      //$('#subscribe_topic').prop('readonly', false);
     });
 
 
@@ -74,7 +73,7 @@ $(document).ready(function() {
       var data = '{"id": "' + id + '", "ipv4Addr": "' + ipAddr.val() + '", "name": "'+ name.val()
       + '", "hostname": "'+ hostname.val()+ '", "cpu_count": "'+ cpus.val() 
       + '", "os_system": "'+ osname.val()+ '"}';
-      getList("removeQueue/"+name.val(),httpRequest4);
+      getList("removeQueue/"+name.val(),httpRequest3);
       socket.emit('register', data=data);
       
       name.val('');
@@ -103,14 +102,9 @@ $(document).ready(function() {
           text=text.replace(/        /gi,"    ");
 
         }
-        //console.log(text);
-
         var $textarea = $('#subscribe_messages');
         $textarea.val($textarea.val() + "=========  The Result =========" + '\n');
         $textarea.val($textarea.val() + text + '\n');
-        // for(var count = 0; count < text3.length; count++){  
-        //   $textarea.val($textarea.val() + text3[count] + '\n');
-        // }
     }
       
     });
@@ -247,7 +241,7 @@ $(document).ready(function() {
     <div class="col-xs-6" id="registerArea">
         <div class="panel panel-default">
           <div class="panel-heading">
-            <h3 class="panel-title">Register Device</h3>
+            <h3 class="panel-title">Waiting Devices</h3>
           </div>
           <div class="panel-body">
             <div class="col-xs-12">
@@ -311,6 +305,34 @@ $(document).ready(function() {
         </div>
       </div>
       <!-- Register End -->
+
+
+    <!-- Subscribe Start -->
+    <div class="col-xs-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Registered Devices</h3>
+        </div>
+
+        <div class="panel-body">
+          <div class="col-xs-12">
+            <div class="row">
+              <div class="form-horizontal">
+                <div class="form-group">
+
+
+
+
+
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Subscribe End -->
 
   </div>
 </div>

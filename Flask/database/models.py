@@ -15,6 +15,7 @@ class Device(db.Document):
     cpu_count = db.IntField()
     os_system = db.StringField()
     hostname = db.StringField()
+    connected = db.BooleanField(default=False)
 
 class RegisterQueue(db.Document):
     name = db.StringField(required=True, unique=True)

@@ -68,34 +68,48 @@ def checkDuplicateWithQueue(data):
         result = r.json()
         del result['_id']
         del result['register']
+        del result['connected']
         if(result!=data):
             print("The 'deviceName' is duplicated with another device in a Queue,") 
             print("you have to change the value of 'deviceName' in a file named config.py")
             sys.exit()
     
     except simplejson.errors.JSONDecodeError as e:
+        # if there is no other device that the devicename is same
         url = MQTT_CONFIG['app_url']+"/registerQueue"
         headers = {'Content-Type': 'application/json; charset=utf-8'}
         r = requests.post(url, data = json.dumps(data), headers=headers)
 
+def checkDuplicateWithRegister(data):
+    try:
+        # check if the device name is duplicated with other device that is already registered
+        url = MQTT_CONFIG['app_url']+"/devices/"+deviceName
+        r = requests.get(url)
+        result = r.json()
+        del result['_id']
+        del result['register']
+        del result['connected']
+        if(result!=data):
+            print("The 'deviceName' is duplicated with another device that is already registered,") 
+            print("you have to change the value of 'deviceName' in a file named config.py")
+            sys.exit()
+
+    except simplejson.errors.JSONDecodeError as e:
+        checkDuplicateWithQueue(data)
+# {"connected":"True"}
+def changeConnected(connection):
+    url = MQTT_CONFIG['app_url']+"/connected/"+deviceName
+    headers = {'Content-Type': 'application/json; charset=utf-8'}
+    body = {"connected":connection}
+    r = requests.put(url, data = json.dumps(body), headers=headers)
+    return r.text
+
+#### MAIN ####
 # register request
-data = {'name': deviceName, 'ipv4Addr': '123.214.186.236', 
+data = {'name': deviceName, 'ipv4Addr': '192.168.1.78', 
         'cpu_count':os.cpu_count(), 'os_system':platform.system(), 
         'hostname':socket.gethostname()}
-try:
-    # check if the device name is duplicated with other device that is already registered
-    url = MQTT_CONFIG['app_url']+"/devices/"+deviceName
-    r = requests.get(url)
-    result = r.json()
-    del result['_id']
-    del result['register']
-    if(result!=data):
-        print("The 'deviceName' is duplicated with another device that is already registered,") 
-        print("you have to change the value of 'deviceName' in a file named config.py")
-        sys.exit()
-
-except simplejson.errors.JSONDecodeError as e:
-    checkDuplicateWithQueue(data)
+checkDuplicateWithRegister(data)
 
 client = mqtt.Client()
 client.on_connect = on_connect
@@ -105,6 +119,6 @@ client.on_message = on_message
 client.connect(MQTT_CONFIG['mqtt_broker_url'],MQTT_CONFIG['mqtt_broker_port'])
 # topic subscribe
 client.subscribe(deviceName, 1)
+print(changeConnected("True"))
 client.loop_forever()
-
 #print(str(round(psutil.virtual_memory().total / (1024.0 **3)))+" GB")
