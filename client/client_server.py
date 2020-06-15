@@ -60,10 +60,8 @@ def checkDuplicateWithQueue(data):
     try:
         # check if the device name is duplicated with other queue
         url = MQTT_CONFIG['app_url']+"/registerQueue/"+deviceName
-        print(url)
         r = requests.get(url)
         result = r.json()
-        print(result)
         del result['_id']
         del result['register']
         del result['connected']
@@ -71,6 +69,8 @@ def checkDuplicateWithQueue(data):
             print("The 'deviceName' is duplicated with another device in a Queue,") 
             print("you have to change the value of 'deviceName' in a file named config.py")
             sys.exit()
+        else:
+            return False
     
     except simplejson.errors.JSONDecodeError as e:
         # if there is no other device that the devicename is same
@@ -84,9 +84,7 @@ def checkDuplicateWithRegister(data):
         # check if the device name is duplicated with other device that is already registered
         url = MQTT_CONFIG['app_url']+"/devices/"+deviceName
         print(url)
-        r = requests.get(url)
         result = r.json()
-        print(result)
         del result['_id']
         del result['register']
         del result['connected']
@@ -94,7 +92,8 @@ def checkDuplicateWithRegister(data):
             print("The 'deviceName' is duplicated with another device that is already registered,") 
             print("you have to change the value of 'deviceName' in a file named config.py")
             sys.exit()
-
+        else:
+            return True
     except simplejson.errors.JSONDecodeError as e:
         return checkDuplicateWithQueue(data)
 
