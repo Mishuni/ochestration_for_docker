@@ -9,7 +9,7 @@ body, html {
 
 #registerArea{
   position: relative;
-  bottom: 200px;
+  bottom: 433px;
   
 
 }
@@ -21,4 +21,8 @@ body, html {
   font-family:  'Abel', sans-serif;
   color: black;
   font-size: 12px;
+}
+
+#deviceListArea{
+  bottom: 433px;
 }

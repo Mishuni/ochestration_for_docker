@@ -5,12 +5,28 @@
 {{ super() }}
 
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+
+
+<!--===============================================================================================-->
+<!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}"> -->
+<!--===============================================================================================-->
+<!--===============================================================================================-->
+
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main2.css') }}">
+<!--===============================================================================================-->
+<!--===============================================================================================-->	
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
 <script src="{{ url_for('static', filename='js/select.js') }}"></script>
+
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  
+
 <script type="text/javascript" charset="utf-8">
 let httpRequest1;
 let httpRequest2;
@@ -226,7 +242,7 @@ $(document).ready(function() {
                   <br><label class="control-label col-xs-2">Result</label>
                   
                     <label class="control-label col-xs-10">
-                    <textarea id="subscribe_messages" class="form-control" rows=20 readonly></textarea></label>
+                    <textarea id="subscribe_messages" class="form-control" rows=33 readonly></textarea></label>
                   
                 </div>
               </div>
@@ -307,8 +323,8 @@ $(document).ready(function() {
       <!-- Register End -->
 
 
-    <!-- Subscribe Start -->
-    <div class="col-xs-6">
+    <!-- List Start -->
+    <div class="col-xs-12" id="deviceListArea">
       <div class="panel panel-default">
         <div class="panel-heading">
           <h3 class="panel-title">Registered Devices</h3>
@@ -316,23 +332,48 @@ $(document).ready(function() {
 
         <div class="panel-body">
           <div class="col-xs-12">
-            <div class="row">
-              <div class="form-horizontal">
-                <div class="form-group">
 
 
 
-
-
-                  
+            <div class="wrap-table100">
+              <div class="table" id="deviceTable">
+              
+                <div class="row2 header">
+                  <div class="cell">
+                    No.
+                  </div>
+                  <div class="cell">
+                    DEVICE NAME
+                  </div>
+                  <div class="cell">
+                    IP ADDRESS
+                  </div>
+                  <div class="cell">
+                    CPU
+                  </div>
+                  <div class="cell">
+                    REGISTER DATE
+                  </div>
+                  <div class="cell">
+                    HOSTNAME
+                  </div>
+                  <div class="cell">
+                    OS
+                  </div>
+                  <div class="cell">
+                    CONNECTED
+                  </div>
                 </div>
+    
+                
               </div>
             </div>
+
           </div>
         </div>
       </div>
     </div>
-    <!-- Subscribe End -->
+    <!-- List End -->
 
   </div>
 </div>
