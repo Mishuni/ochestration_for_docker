@@ -17,7 +17,6 @@ def on_connect(client, userdata, flags, rc):
     else:
         print("Bad connection Returned code=", rc)
 
-
 def on_disconnect(client, userdata, flags, rc=0):
     print("Disconnected"+ client.values +str(rc))
 
@@ -25,12 +24,9 @@ def on_disconnect(client, userdata, flags, rc=0):
 def on_subscribe(client, userdata, mid, granted_qos):
     print("subscribed: " + str(mid) + " " + str(granted_qos))
 
-
 def on_message(client, userdata, msg):
     command = str(msg.payload.decode("utf-8")).strip().split(' ')
-    #print(msg.topic)
     runCmd(command)
-
 
 def runCmd(command):
     order = command[0]
@@ -64,8 +60,10 @@ def checkDuplicateWithQueue(data):
     try:
         # check if the device name is duplicated with other queue
         url = MQTT_CONFIG['app_url']+"/registerQueue/"+deviceName
+        print(url)
         r = requests.get(url)
         result = r.json()
+        print(result)
         del result['_id']
         del result['register']
         del result['connected']
@@ -79,13 +77,16 @@ def checkDuplicateWithQueue(data):
         url = MQTT_CONFIG['app_url']+"/registerQueue"
         headers = {'Content-Type': 'application/json; charset=utf-8'}
         r = requests.post(url, data = json.dumps(data), headers=headers)
+        
 
 def checkDuplicateWithRegister(data):
     try:
         # check if the device name is duplicated with other device that is already registered
         url = MQTT_CONFIG['app_url']+"/devices/"+deviceName
+        print(url)
         r = requests.get(url)
         result = r.json()
+        print(result)
         del result['_id']
         del result['register']
         del result['connected']
@@ -95,7 +96,8 @@ def checkDuplicateWithRegister(data):
             sys.exit()
 
     except simplejson.errors.JSONDecodeError as e:
-        checkDuplicateWithQueue(data)
+        return checkDuplicateWithQueue(data)
+
 # {"connected":"True"}
 def changeConnected(connection):
     url = MQTT_CONFIG['app_url']+"/connected/"+deviceName
@@ -109,16 +111,17 @@ def changeConnected(connection):
 data = {'name': deviceName, 'ipv4Addr': '192.168.1.78', 
         'cpu_count':os.cpu_count(), 'os_system':platform.system(), 
         'hostname':socket.gethostname()}
-checkDuplicateWithRegister(data)
-
-client = mqtt.Client()
-client.on_connect = on_connect
-client.on_disconnect = on_disconnect
-client.on_subscribe = on_subscribe
-client.on_message = on_message
-client.connect(MQTT_CONFIG['mqtt_broker_url'],MQTT_CONFIG['mqtt_broker_port'])
-# topic subscribe
-client.subscribe(deviceName, 1)
-print(changeConnected("True"))
-client.loop_forever()
-#print(str(round(psutil.virtual_memory().total / (1024.0 **3)))+" GB")
+possible = checkDuplicateWithRegister(data)
+print(possible)
+if(possible):
+    client = mqtt.Client()
+    client.on_connect = on_connect
+    client.on_disconnect = on_disconnect
+    client.on_subscribe = on_subscribe
+    client.on_message = on_message
+    client.connect(MQTT_CONFIG['mqtt_broker_url'],MQTT_CONFIG['mqtt_broker_port'])
+    # topic subscribe
+    client.subscribe(deviceName, 1)
+    print(changeConnected("True"))
+    client.loop_forever()
+    #print(str(round(psutil.virtual_memory().total / (1024.0 **3)))+" GB")

@@ -65,6 +65,7 @@ def delete_device(id):
 @app.route('/removeAlldevices', methods=['DELETE'])
 def delete_allDevices():
     Device.objects().delete()
+    RegisterQueue.objects().delete()
     return Response(Device.objects().to_json(), mimetype="application/json", status=200) 
 
 @app.route('/devices/<name>', methods=['GET'])
