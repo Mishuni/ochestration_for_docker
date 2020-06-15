@@ -26,3 +26,15 @@ body, html {
 #deviceListArea{
   bottom: 433px;
 }
+
+.btn{
+  background-color: grey;
+  border-color: grey;
+  color: white;
+}
+
+.btn:hover{
+  background-color: white;
+  border-color: grey;
+  color: black;
+}

@@ -50,3 +50,9 @@ $ ./ngrok http 8080
 
 ```
 
+#### Python Library
+
+```sh
+$ pip install paho-mqtt
+
+```
