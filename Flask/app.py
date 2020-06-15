@@ -65,6 +65,7 @@ def delete_device(id):
 @app.route('/removeAlldevices', methods=['DELETE'])
 def delete_allDevices():
     Device.objects().delete()
+    RegisterQueue.objects().delete()
     return Response(Device.objects().to_json(), mimetype="application/json", status=200) 
 
 @app.route('/devices/<name>', methods=['GET'])
@@ -80,7 +81,6 @@ def get_register_devices():
 @app.route('/registerQueue', methods=['POST'])
 def add_register_device():
     data = request.get_json()
-    print(data)
     device = RegisterQueue(**data).save()
     return Response(device, mimetype="application/json", status=200)
 
@@ -93,6 +93,18 @@ def get_register_device(name):
 def remove_register_device(name):
     RegisterQueue.objects.get(name=name).delete()
     return Response(RegisterQueue.objects().to_json(), mimetype="application/json", status=200) 
+
+@app.route('/connected/<name>', methods=['PUT'])
+def update_connected(name):
+    # {"connected":"True"}
+    body = request.get_json()
+    ori = Device.objects.get(name=name)
+    if(body['connected']=='True'):
+        Device.objects.get(name=name).update(connected=True)
+    elif(body['connected'=='False']):
+        Device.objects.get(name=name).update(connected=False)
+    
+    return Response(Device.objects().get(name=name).to_json(), mimetype="application/json", status=200) 
 
 
 ### socket
