@@ -5,7 +5,7 @@ function changeSelect(){
     topic.val(selectVal);
     var sub = (selectVal=='')? '':selectVal+"_result";
     sub_topic.val(sub);
-  }
+}
   
 function changeQueueSelect(){
   var selectVal = $('#regQueue option:selected').val();
@@ -74,11 +74,13 @@ function printListDetail(url,httpRequest){
       '</div><div class="cell" data-title="CPU">'+list[count]["cpu_count"]+
       '</div><div class="cell" data-title="REGISTER DATE">'+date_to_str(date)+
       '</div><div class="cell" data-title="HOSTNAME">'+list[count]["hostname"]+
-      '</div><div class="cell" data-title="OS">'+list[count]["os_system"]+
-      '</div><div class="cell" data-title="CONNECTED">'+list[count]["connected"]+'</div></div>';
+      '</div><div class="cell" data-title="OS">'+list[count]["os_system"]+'</div>' ; 
+      
+      var lastLine = (list[count]["connected"])? 
+      '<div class="cell" data-title="CONNECTED" style="color:#ff1a1a;">True</div></div>':
+      '<div class="cell" data-title="CONNECTED">False</div></div>';
 
-      console.log();
-      deviceTable.append(tableRow);      
+      deviceTable.append(tableRow+lastLine);      
    
     }
     var deviceNum = $('#deviceNum');
@@ -118,32 +120,19 @@ function printListDetail(url,httpRequest){
 }
 
 function date_to_str(format)
-
 {
-
     var year = format.getFullYear();
-
     var month = format.getMonth() + 1;
-
     if(month<10) month = '0' + month;
-
     var date = format.getDate();
-
     if(date<10) date = '0' + date;
-
     var hour = format.getHours();
-
     if(hour<10) hour = '0' + hour;
-
     var min = format.getMinutes();
-
     if(min<10) min = '0' + min;
-
     var sec = format.getSeconds();
-
     if(sec<10) sec = '0' + sec;
 
-    
-
-    return year + "-" + month + "-" + date + " " + hour + ":" + min + ":" + sec; }
+    return year + "-" + month + "-" + date + " " + hour + ":" + min + ":" + sec; 
+}
   
