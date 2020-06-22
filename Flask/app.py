@@ -152,7 +152,7 @@ def handle_logging(client, userdata, level, buf):
 
 if __name__ == '__main__':
 
-    socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False, debug=True)
+    socketio.run(app, host='0.0.0.0', port=8002, use_reloader=False, debug=True)
 
 # print(os.system('docker -H 192.168.0.62:2376 ps -a'))
 # @mqtt.on_connect()

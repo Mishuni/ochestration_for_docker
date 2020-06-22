@@ -74,7 +74,7 @@ def checkDuplicateWithQueue(data):
         else:
             return False
     
-    except simplejson.errors.JSONDecodeError as e:
+    except simplejson.errors.JSONDecodeError:
         # if there is no other device that the devicename is same
         url = MQTT_CONFIG['app_url']+"/registerQueue"
         headers = {'Content-Type': 'application/json; charset=utf-8'}
@@ -97,7 +97,7 @@ def checkDuplicateWithRegister(data):
             sys.exit()
         else:
             return True
-    except simplejson.errors.JSONDecodeError as e:
+    except simplejson.errors.JSONDecodeError:
         return checkDuplicateWithQueue(data)
 
 # {"connected":"True"}
