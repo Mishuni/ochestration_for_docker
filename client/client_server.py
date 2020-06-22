@@ -7,7 +7,6 @@ from config import *
 
 deviceName = MQTT_CONFIG['deviceName']
 client_path = os.path.dirname(os.path.abspath(__file__))+'/client_publish.py'
-
 #import socket
 #print(socket.gethostbyname(socket.getfqdn()))
 

@@ -2,7 +2,6 @@ version: "3.2"      # version 정보를 작성합니다.
 
 services:           # service 목록을 정의합니다.
 
-
     mongodb:          # service의 이름입니다.
       image: mongo    # 해당 service에서 사용할 image입니다.
       restart: always # container를 실행할 때 항상 이미 수행중이라면 재시작을 수행합니다.

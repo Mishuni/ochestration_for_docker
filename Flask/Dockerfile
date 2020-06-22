@@ -12,3 +12,4 @@ RUN pip3 install Flask pytz flask-mqtt flask-socketio flask-bootstrap eventlet r
 
 # run uWSGI with the ini file
 CMD python3 /www/app.py
+

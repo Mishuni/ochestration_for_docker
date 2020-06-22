@@ -28,6 +28,7 @@ app.config['MONGODB_SETTINGS'] = {
 
 initialize_db(app)
 
+
 app.config['SECRET'] = APP_CONFIG['secret']
 app.config['TEMPLATES_AUTO_RELOAD'] = APP_CONFIG['templates_auto_reload']
 app.config['MQTT_BROKER_URL'] = MQTT_CONFIG['mqtt_broker_url']
