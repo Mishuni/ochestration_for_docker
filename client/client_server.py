@@ -138,6 +138,6 @@ if(possible):
     # topic subscribe
     client.subscribe(deviceName, 1)
     client.subscribe("ACK", 1)
-    print(changeConnected("True"))
+    #print(changeConnected("True"))
     client.loop_forever()
     #print(str(round(psutil.virtual_memory().total / (1024.0 **3)))+" GB")

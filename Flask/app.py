@@ -102,7 +102,7 @@ def update_connected(name):
     ori = Device.objects.get(name=name)
     if(body['connected']=='True'):
         ori.update(connected=True)
-    elif(body['connected'=='False']):
+    elif(body['connected']=='False'):
         ori.update(connected=False)
     
     return Response(Device.objects().get(name=name).to_json(), mimetype="application/json", status=200) 

@@ -22,10 +22,26 @@ function changeMsg(){
     $('#object').attr("disabled","disabled"); 
   }
 }
+
+function changeConn(name,connect){
+  var xhr = new XMLHttpRequest();
+  xhr.onload = function(){
+    console.log(name," changed the connection to ",connect);
+  };
+
+  if(!xhr){
+      console.log("Can't make XMLHTTP instance");
+      return false;
+  }
+
+  xhr.open('PUT','connected/'+name,true);
+  xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
+  xhr.send('{"connected":"'+connect+'"}');
+}
   
 function getList(requestName,httpRequest){
   httpRequest = new XMLHttpRequest();
-  httpRequest.onreadystatechange = function(){
+  httpRequest.onload = function(){
     printList(httpRequest);
   };
 
@@ -67,6 +83,7 @@ function printListDetail(url,httpRequest){
     '<div class="cell">CONNECTED</div></div>';
     deviceTable.append(headline);
     deviceList.append("<option value='' selected disabled >Select a device</option>");
+    devicesNameList=[];
     for(var count = 0; count < list.length; ++count){
 
       deviceList.append("<option value='"+list[count]["name"]+"'>"
@@ -87,6 +104,7 @@ function printListDetail(url,httpRequest){
       '<div class="cell" data-title="CONNECTED">False</div></div>';
 
       deviceTable.append(tableRow+lastLine);      
+      devicesNameList.push(list[count]["name"]);
    
     }
     var deviceNum = $('#deviceNum');
