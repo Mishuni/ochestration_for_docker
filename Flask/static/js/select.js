@@ -16,10 +16,10 @@ function changeMsg(){
   $('#optionMessage').val('');
   var option = $('#message').val();
   if(option==='remove'){
-    var objectSel = $('#object').removeAttr('disabled'); 
+    $('#object').removeAttr('disabled'); 
   }
   else{
-    var objectSel = $('#object').attr("disabled","disabled"); 
+    $('#object').attr("disabled","disabled"); 
   }
 }
   
@@ -60,6 +60,12 @@ function printListDetail(url,httpRequest){
     var deviceList = $('#pubDevice');
     var deviceTable=$('#deviceTable');
     deviceList.empty();
+    deviceTable.empty();
+    var headline = '<div class="row2 header"><div class="cell">No.</div>'+
+    '<div class="cell">DEVICE NAME</div><div class="cell">IP ADDRESS</div><div class="cell">CPU</div>'+
+    '<div class="cell">REGISTER DATE</div><div class="cell">HOSTNAME</div><div class="cell">OS</div>'+
+    '<div class="cell">CONNECTED</div></div>';
+    deviceTable.append(headline);
     deviceList.append("<option value='' selected disabled >Select a device</option>");
     for(var count = 0; count < list.length; ++count){
 

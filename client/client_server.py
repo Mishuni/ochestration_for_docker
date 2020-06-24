@@ -5,10 +5,9 @@ import subprocess, sys
 import json, simplejson
 from config import *
 
+#deviceName = os.getenv('DEVICENAME')
 deviceName = MQTT_CONFIG['deviceName']
 client_path = os.path.dirname(os.path.abspath(__file__))+'/client_publish.py'
-#import socket
-#print(socket.gethostbyname(socket.getfqdn()))
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
@@ -24,8 +23,14 @@ def on_subscribe(client, userdata, mid, granted_qos):
     print("subscribed: " + str(mid) + " " + str(granted_qos))
 
 def on_message(client, userdata, msg):
-    command = str(msg.payload.decode("utf-8")).strip().split(' ')
-    runCmd(command)
+    print("topic:",msg.topic)
+    if(msg.topic=="ACK"):
+        print("ACK")
+        data=deviceName
+        client.publish("RST",data,1)
+    else:
+        command = str(msg.payload.decode("utf-8")).strip().split(' ')
+        runCmd(command)
 
 def runCmd(command):
     order = command[0]
@@ -109,9 +114,18 @@ def changeConnected(connection):
 
 #### MAIN ####
 # register request
-data = {'name': deviceName, 'ipv4Addr': '192.168.1.78', 
+#os.getenv('DEVICENAME')
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.connect(("8.8.8.8", 80))
+print(s.getsockname()[0])
+
+data = {'name': deviceName, 'ipv4Addr': s.getsockname()[0], 
         'cpu_count':os.cpu_count(), 'os_system':platform.system(), 
         'hostname':socket.gethostname()}
+s.close()
+print(data)
+print(os.getenv('DEVICENAME'))
+print(client_path)
 possible = checkDuplicateWithRegister(data)
 print(possible)
 if(possible):
@@ -123,6 +137,7 @@ if(possible):
     client.connect(MQTT_CONFIG['mqtt_broker_url'],MQTT_CONFIG['mqtt_broker_port'])
     # topic subscribe
     client.subscribe(deviceName, 1)
+    client.subscribe("ACK", 1)
     print(changeConnected("True"))
     client.loop_forever()
     #print(str(round(psutil.virtual_memory().total / (1024.0 **3)))+" GB")

@@ -23,6 +23,7 @@
 let httpRequest1;
 let httpRequest2;
 let httpRequest3;
+let ackInterval = 3000;
 
 $(document).ready(function() {
     var socket = io.connect('http://' + document.domain + ':' + location.port);
@@ -30,6 +31,13 @@ $(document).ready(function() {
     //intervalReq = setInterval(getList,2000);
     getList("devices",httpRequest1);
     getList("registerQueue",httpRequest2);
+
+    // check for MQTT connection
+    setInterval(function(){
+      var data = '{"topic": "ACK", "message": "ack"}';
+      //console.log(data);
+      socket.emit('ack', data=data);
+    },ackInterval);
     
     // $.getJSON('http://Gd.geobytes.com/GetCityDetails?callback=?', function(data) {
     // console.log(JSON.stringify(data, null, 2));
@@ -61,10 +69,10 @@ $(document).ready(function() {
     });
 
     $('#unsubscribe').click(function(event) {
-      socket.emit('unsubscribe_all');
+      var data = $('#subscribe_topic').val();
+      socket.emit('unsubscribe_all',data=data);
       $('#subscribe').show();
       $('#unsubscribe').hide();
-      //$('#subscribe_topic').prop('readonly', false);
     });
 
 
@@ -96,7 +104,9 @@ $(document).ready(function() {
     socket.on('mqtt_message', function(data) {
       var topic = data['topic'];
       var sub_topic = $('#subscribe_topic').val();
-      
+      if(topic==="RST"){
+        console.log(data['payload'])
+      }
       if(sub_topic == topic){
         var text = data['payload'];
         if(text == "\n"){

@@ -101,24 +101,35 @@ def update_connected(name):
     body = request.get_json()
     ori = Device.objects.get(name=name)
     if(body['connected']=='True'):
-        Device.objects.get(name=name).update(connected=True)
+        ori.update(connected=True)
     elif(body['connected'=='False']):
-        Device.objects.get(name=name).update(connected=False)
+        ori.update(connected=False)
     
     return Response(Device.objects().get(name=name).to_json(), mimetype="application/json", status=200) 
 
 
 ### socket
+
+@socketio.on('connect') 
+def handle_connect():
+    mqtt.subscribe('RST')
+
 # db register
 @socketio.on('register')
 def handle_register(json_str):
     data = json.loads(json_str)
-    device = Device(**data).save()
+    Device(**data).save()
 
 @socketio.on('publish')
 def handle_publish(json_str):
     data = json.loads(json_str)
     mqtt.publish(data['topic'], data['message'])
+
+# check mqtt connection
+@socketio.on('ack')
+def handle_ack(json_str):
+    data = json.loads(json_str)
+    mqtt.publish(data['topic'])
 
 @socketio.on('subscribe')
 def handle_subscribe(json_str):
@@ -126,8 +137,9 @@ def handle_subscribe(json_str):
     mqtt.subscribe(data['topic'])
 
 @socketio.on('unsubscribe_all')
-def handle_unsubscribe_all():
-    mqtt.unsubscribe_all()
+def handle_unsubscribe_all(data):
+    print(data)
+    mqtt.unsubscribe(data)
 
 
 ### mqtt

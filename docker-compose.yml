@@ -21,7 +21,7 @@ services:           # service 목록을 정의합니다.
 
     flask:
       container_name: flask
-      image: "flask:test"
+      image: "flask:edge"
       build:
         context: ./Flask
       ports:
@@ -30,7 +30,6 @@ services:           # service 목록을 정의합니다.
       - "./Flask:/www"
       networks:
       - backend
-
 
 networks:
   backend:

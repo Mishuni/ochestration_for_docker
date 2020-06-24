@@ -10,8 +10,8 @@ MQTT_CONFIG={
 
 
 DB_CONFIG={
-    'host': 'mongodb://mongodb/cluster',
-    #'host': 'mongodb://localhost/cluster',
+    #'host': 'mongodb://mongodb/cluster',
+    'host': 'mongodb://localhost/cluster',
 }
 
 APP_CONFIG={
