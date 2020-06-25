@@ -50,6 +50,7 @@ $(document).ready(function() {
         // make remaining devices's connection to False
         devicesNameList_copy.forEach(element => changeConn(element,"False"));
         getList("devices",httpRequest1);
+        getList("registerQueue",httpRequest2);
         count = 0;
       }
       else{
@@ -126,10 +127,12 @@ $(document).ready(function() {
       if(topic==="RST"){
         var name = data['payload']
         console.log(name);
-        changeConn(name,"True");
+        a = devicesNameList_copy.length
         devicesNameList_copy = devicesNameList_copy.filter(e => e !== name);
+        if(a!=devicesNameList_copy.length){
+          changeConn(name,"True");
+        }
         console.log(devicesNameList_copy);
-        
       }
       else if(sub_topic == topic){
         var text = data['payload'];

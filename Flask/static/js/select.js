@@ -75,19 +75,40 @@ function printListDetail(url,httpRequest){
     var list = JSON.parse(httpRequest.responseText);
     var deviceList = $('#pubDevice');
     var deviceTable=$('#deviceTable');
+    
+    var selectVal = $('#pubDevice option:selected').val();
+    console.log("sv >:",selectVal);
+
     deviceList.empty();
     deviceTable.empty();
+
     var headline = '<div class="row2 header"><div class="cell">No.</div>'+
     '<div class="cell">DEVICE NAME</div><div class="cell">IP ADDRESS</div><div class="cell">CPU</div>'+
     '<div class="cell">REGISTER DATE</div><div class="cell">HOSTNAME</div><div class="cell">OS</div>'+
     '<div class="cell">CONNECTED</div></div>';
     deviceTable.append(headline);
-    deviceList.append("<option value='' selected disabled >Select a device</option>");
-    devicesNameList=[];
-    for(var count = 0; count < list.length; ++count){
 
-      deviceList.append("<option value='"+list[count]["name"]+"'>"
-      +list[count]["name"]+"</option>");
+    if(selectVal==undefined || selectVal==''){
+      deviceList.append("<option value='' selected disabled >Select a device</option>");
+    }
+    else{
+      deviceList.append("<option value='' disabled >Select a device</option>");
+    }
+    
+    devicesNameList=[];
+    
+    for(var count = 0; count < list.length; ++count){
+      if(!list[count]["connected"]){
+        deviceList.append("<option value='"+list[count]["name"]+"' disabled>"
+        +list[count]["name"]+" (disconnected)"+"</option>");
+        if(list[count]["name"]==selectVal){
+          deviceList.find("option:eq(0)").prop("selected", true);
+        }
+      }
+      else{
+        deviceList.append("<option value='"+list[count]["name"]+"'>"
+        +list[count]["name"]+"</option>");
+      }
      
       var date = new Date(list[count]["register"].$date);
       var tableRow = 
@@ -116,8 +137,17 @@ function printListDetail(url,httpRequest){
   else if(url.endsWith("registerQueue")){
     var list = JSON.parse(httpRequest.responseText);
     var deviceList = $('#regQueue');
+    var selectVal = $('#regQueue option:selected').val();
+    console.log("sv >:",selectVal);
     deviceList.empty();
-    deviceList.append("<option value='' selected disabled >Select a device</option>");
+    if(selectVal==undefined || selectVal==''){
+      deviceList.append("<option value='' selected disabled >Select a device</option>");
+    }
+    else{
+      deviceList.append("<option value='' disabled >Select a device</option>");
+    }
+
+    
     for(var count = 0; count < list.length; ++count){
       deviceList.append("<option value='"+list[count]["name"]+"'>"
       +list[count]["name"]+"</option>");

@@ -1,7 +1,7 @@
 # config.py
 
 MQTT_CONFIG={
-    'deviceName':'teamgold',
+    'deviceName':'teamgold3',
     'mqtt_broker_url': 'broker.hivemq.com', #'192.168.1.78',#'broker.hivemq.com'
     'mqtt_broker_port':1883,
     'mqtt_keepalive':5,
