@@ -86,6 +86,7 @@ $(document).ready(function() {
       $('#unsubscribe').show();
       $('#subscribe_topic').prop('readonly', true);
       $('#subscribe_messages').val('');
+      $('#pubDevice').attr("disabled","disabled"); 
     });
 
     $('#unsubscribe').click(function(event) {
@@ -93,6 +94,7 @@ $(document).ready(function() {
       socket.emit('unsubscribe_all',data=data);
       $('#subscribe').show();
       $('#unsubscribe').hide();
+      $('#pubDevice').removeAttr('disabled'); 
     });
 
 

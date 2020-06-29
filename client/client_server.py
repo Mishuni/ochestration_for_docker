@@ -102,6 +102,7 @@ def checkDuplicateWithRegister(data):
         else:
             return True
     except simplejson.errors.JSONDecodeError:
+        # if there is no other device which the name is same
         return checkDuplicateWithQueue(data)
 
 # {"connected":"True"}

@@ -106,8 +106,15 @@ function printListDetail(url,httpRequest){
         }
       }
       else{
-        deviceList.append("<option value='"+list[count]["name"]+"'>"
-        +list[count]["name"]+"</option>");
+        if(list[count]["name"]==selectVal){
+        
+          deviceList.append("<option value='"+list[count]["name"]+"' selected>"
+          +list[count]["name"]+"</option>");
+        }else{
+          deviceList.append("<option value='"+list[count]["name"]+"'>"
+          +list[count]["name"]+"</option>");
+        }
+        
       }
      
       var date = new Date(list[count]["register"].$date);
