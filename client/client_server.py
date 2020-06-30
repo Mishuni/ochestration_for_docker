@@ -18,14 +18,13 @@ def on_connect(client, userdata, flags, rc):
 def on_disconnect(client, userdata, flags, rc=0):
     print("Disconnected"+ client.values +str(rc))
 
-
 def on_subscribe(client, userdata, mid, granted_qos):
     print("subscribed: " + str(mid) + " " + str(granted_qos))
 
 def on_message(client, userdata, msg):
     print("topic:",msg.topic)
     if(msg.topic=="ACK"):
-        print("ACK")
+        print("Received check reqeuset")
         data=deviceName
         client.publish("RST",data,1)
     else:
@@ -74,7 +73,7 @@ def checkDuplicateWithQueue(data):
         if(result!=data):
             print("The 'deviceName' is duplicated with another device in a Queue,") 
             print("you have to change the value of 'deviceName' in a file named config.py")
-            sys.exit()
+            return False
         else:
             return False
     
@@ -118,17 +117,13 @@ def changeConnected(connection):
 #os.getenv('DEVICENAME')
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.connect(("8.8.8.8", 80))
-print(s.getsockname()[0])
-
 data = {'name': deviceName, 'ipv4Addr': s.getsockname()[0], 
         'cpu_count':os.cpu_count(), 'os_system':platform.system(), 
         'hostname':socket.gethostname()}
 s.close()
 print(data)
-print(os.getenv('DEVICENAME'))
-print(client_path)
 possible = checkDuplicateWithRegister(data)
-print(possible)
+print("Register:",possible)
 if(possible):
     client = mqtt.Client()
     client.on_connect = on_connect
@@ -139,6 +134,5 @@ if(possible):
     # topic subscribe
     client.subscribe(deviceName, 1)
     client.subscribe("ACK", 1)
-    #print(changeConnected("True"))
     client.loop_forever()
-    #print(str(round(psutil.virtual_memory().total / (1024.0 **3)))+" GB")
+    
