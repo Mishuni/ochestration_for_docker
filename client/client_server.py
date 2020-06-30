@@ -98,7 +98,7 @@ def checkDuplicateWithRegister(data):
         if(result!=data):
             print("The 'deviceName' is duplicated with another device that is already registered,") 
             print("you have to change the value of 'deviceName' in a file named config.py")
-            sys.exit()
+            return False
         else:
             return True
     except simplejson.errors.JSONDecodeError:

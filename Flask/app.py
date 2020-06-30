@@ -109,7 +109,6 @@ def update_connected(name):
 
 
 ### socket
-
 @socketio.on('connect') 
 def handle_connect():
     mqtt.subscribe('RST')
