@@ -17,147 +17,6 @@
 
 
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-  
-
-<script type="text/javascript" charset="utf-8">
-let httpRequest1;
-let httpRequest2;
-let httpRequest3;
-let ackInterval = 2000;
-let count = 0;
-var devicesNameList;
-var devicesNameList_copy;
-
-$(document).ready(function() {
-    var socket = io.connect('http://' + document.domain + ':' + location.port);
-    
-    //intervalReq = setInterval(getList,2000);
-    getList("devices",httpRequest1);
-    getList("registerQueue",httpRequest2);
-
-    // check for MQTT connection
-    setInterval(function(){
-      console.log(count)
-      if(count==1){
-        var data = '{"topic": "ACK", "message": "ack"}';
-        //console.log(data);
-        devicesNameList_copy = devicesNameList.slice();
-        console.log(devicesNameList_copy);
-        socket.emit('ack', data=data);
-        count += 1;
-      }
-      else if(count==5){
-        // make remaining devices's connection to False
-        devicesNameList_copy.forEach(element => changeConn(element,"False"));
-        getList("devices",httpRequest1);
-        getList("registerQueue",httpRequest2);
-        count = 0;
-      }
-      else{
-        count += 1;
-      }
-      
-    },ackInterval);
-    
-    // $.getJSON('http://Gd.geobytes.com/GetCityDetails?callback=?', function(data) {
-    // console.log(JSON.stringify(data, null, 2));
-    // });
-    
-    $('#publish').click(function(event) {
-      var topic = $('#topic').val();
-      var message = $('#message').val()
-      if(message==="remove"){
-        message = message+' '+$('#optionMessage').val()+" "+$('#object').val();
-      }
-      else{
-        message = message+' '+$('#optionMessage').val();
-      }
-
-      var data = '{"topic": "' + topic + '", "message": "' + message + '"}';
-      //console.log(data);
-      socket.emit('publish', data=data);
-    });
-
-    $('#subscribe').click(function(event) {
-      var topic = $('#subscribe_topic').val();
-      var data = '{"topic": "' + topic + '"}';
-      socket.emit('subscribe', data=data);
-      $('#subscribe').hide();
-      $('#unsubscribe').show();
-      $('#subscribe_topic').prop('readonly', true);
-      $('#subscribe_messages').val('');
-      $('#pubDevice').attr("disabled","disabled"); 
-    });
-
-    $('#unsubscribe').click(function(event) {
-      var data = $('#subscribe_topic').val();
-      socket.emit('unsubscribe_all',data=data);
-      $('#subscribe').show();
-      $('#unsubscribe').hide();
-      $('#pubDevice').removeAttr('disabled'); 
-    });
-
-
-    // register a device
-    $('#register').click(function(event) {
-      var name = $('#regQueue option:selected');
-      var hostname = $('#hostname');
-      var osname = $('#osname');
-      var cpus = $('#cpus');
-      var ipAddr = $('#ipAddr');
-      
-      getList("devices",httpRequest1);
-      var id = $('#deviceNum').val();
-      var data = '{"id": "' + id + '", "ipv4Addr": "' + ipAddr.val() + '", "name": "'+ name.val()
-      + '", "hostname": "'+ hostname.val()+ '", "cpu_count": "'+ cpus.val() 
-      + '", "os_system": "'+ osname.val()+ '"}';
-      getList("removeQueue/"+name.val(),httpRequest3);
-      socket.emit('register', data=data);
-      
-      name.val('');
-      hostname.val('');
-      osname.val('');
-      cpus.val('');
-      ipAddr.val('');
-
-    });
-
-
-    socket.on('mqtt_message', function(data) {
-      var topic = data['topic'];
-      var sub_topic = $('#subscribe_topic').val();
-      if(topic==="RST"){
-        var name = data['payload']
-        console.log(name);
-        a = devicesNameList_copy.length
-        devicesNameList_copy = devicesNameList_copy.filter(e => e !== name);
-        if(a!=devicesNameList_copy.length){
-          changeConn(name,"True");
-        }
-        console.log(devicesNameList_copy);
-      }
-      else if(sub_topic == topic){
-        var text = data['payload'];
-        if(text == "\n"){
-          text = "The command line has a problem. \n"
-        }
-        else{
-
-          text=text.replace(/minutes/gi,"m");
-          text=text.replace(/hours/gi,"h");
-          text=text.replace(/seconds/gi,"s");
-          text=text.replace(/        /gi,"    ");
-
-        }
-        var $textarea = $('#subscribe_messages');
-        $textarea.val($textarea.val() + "=========  The Result =========" + '\n');
-        $textarea.val($textarea.val() + text + '\n');
-    }
-      
-    });
-});
-</script>
-
 
 {% endblock %}
 
@@ -194,7 +53,7 @@ $(document).ready(function() {
                 <div class="form-group">
                   <label class="control-label col-xs-4">Device: </label>
                   <div class="col-xs-8">
-                    <select id="pubDevice" class="form-control" onchange=" changeSelect()">
+                    <select id="pubDevice" class="form-control">
                       
                     </select>
                   </div> 
@@ -203,7 +62,7 @@ $(document).ready(function() {
                 <div class="form-group">
                   <label class="control-label col-xs-4">Message: </label>
                   <div class="col-xs-8">
-                    <select id="message" class="form-control" onchange=" changeMsg()">
+                    <select id="message" class="form-control">
                       <option value="status">status</option>
                       <option value="images">images</option>
                       <option value="pull">pull</option>
@@ -305,7 +164,7 @@ $(document).ready(function() {
                   <div class="form-group">
                     <label class="control-label col-xs-4">Waiting Queue: </label>
                     <div class="col-xs-8">
-                      <select id="regQueue" class="form-control" onchange="changeQueueSelect()">
+                      <select id="regQueue" class="form-control">
                         
                       </select>
                     </div> 
