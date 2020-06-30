@@ -15,7 +15,6 @@ $(window).load(function () {
     console.log(count)
     if(count==1){
       var data = '{"topic": "ACK", "message": "ack"}';
-      console.log(devicesNameList);
       devicesNameList_copy = devicesNameList.slice();
       console.log(devicesNameList_copy);
       socket.emit('ack', data=data);

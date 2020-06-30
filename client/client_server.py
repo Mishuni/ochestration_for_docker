@@ -69,7 +69,6 @@ def checkDuplicateWithQueue(data):
         
         del result['_id']
         del result['register']
-        del result['connected']
         if(result!=data):
             print("The 'deviceName' is duplicated with another device in a Queue,") 
             print("you have to change the value of 'deviceName' in a file named config.py")
@@ -82,6 +81,7 @@ def checkDuplicateWithQueue(data):
         url = MQTT_CONFIG['app_url']+"/registerQueue"
         headers = {'Content-Type': 'application/json; charset=utf-8'}
         r = requests.post(url, data = json.dumps(data), headers=headers)
+        return False
         
 
 def checkDuplicateWithRegister(data):
