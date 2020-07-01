@@ -74,6 +74,7 @@ def checkDuplicateWithQueue(data):
             print("you have to change the value of 'deviceName' in a file named config.py")
             return False
         else:
+            print("Waiting permission from master")
             return False
     
     except simplejson.errors.JSONDecodeError:
