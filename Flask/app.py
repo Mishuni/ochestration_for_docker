@@ -28,6 +28,7 @@ app.config['MONGODB_SETTINGS'] = {
 
 initialize_db(app)
 
+
 app.config['SECRET'] = APP_CONFIG['secret']
 app.config['TEMPLATES_AUTO_RELOAD'] = APP_CONFIG['templates_auto_reload']
 app.config['MQTT_BROKER_URL'] = MQTT_CONFIG['mqtt_broker_url']
@@ -100,24 +101,34 @@ def update_connected(name):
     body = request.get_json()
     ori = Device.objects.get(name=name)
     if(body['connected']=='True'):
-        Device.objects.get(name=name).update(connected=True)
-    elif(body['connected'=='False']):
-        Device.objects.get(name=name).update(connected=False)
+        ori.update(connected=True)
+    elif(body['connected']=='False'):
+        ori.update(connected=False)
     
     return Response(Device.objects().get(name=name).to_json(), mimetype="application/json", status=200) 
 
 
 ### socket
+@socketio.on('connect') 
+def handle_connect():
+    mqtt.subscribe('RST')
+
 # db register
 @socketio.on('register')
 def handle_register(json_str):
     data = json.loads(json_str)
-    device = Device(**data).save()
+    Device(**data).save()
 
 @socketio.on('publish')
 def handle_publish(json_str):
     data = json.loads(json_str)
     mqtt.publish(data['topic'], data['message'])
+
+# check mqtt connection
+@socketio.on('ack')
+def handle_ack(json_str):
+    data = json.loads(json_str)
+    mqtt.publish(data['topic'])
 
 @socketio.on('subscribe')
 def handle_subscribe(json_str):
@@ -125,8 +136,9 @@ def handle_subscribe(json_str):
     mqtt.subscribe(data['topic'])
 
 @socketio.on('unsubscribe_all')
-def handle_unsubscribe_all():
-    mqtt.unsubscribe_all()
+def handle_unsubscribe_all(data):
+    print(data)
+    mqtt.unsubscribe(data)
 
 
 ### mqtt
@@ -152,7 +164,7 @@ def handle_logging(client, userdata, level, buf):
 
 if __name__ == '__main__':
 
-    socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False, debug=True)
+    socketio.run(app, host='0.0.0.0', port=8002, use_reloader=False, debug=True)
 
 # print(os.system('docker -H 192.168.0.62:2376 ps -a'))
 # @mqtt.on_connect()

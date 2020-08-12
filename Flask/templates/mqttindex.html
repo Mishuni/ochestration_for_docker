@@ -5,8 +5,6 @@
 {{ super() }}
 
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
-
-
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main2.css') }}">
 {% endblock %}
 
@@ -14,112 +12,6 @@
 {{ super() }}
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
 <script src="{{ url_for('static', filename='js/select.js') }}"></script>
-
-
-<script src="{{ url_for('static', filename='js/main.js') }}"></script>
-  
-
-<script type="text/javascript" charset="utf-8">
-let httpRequest1;
-let httpRequest2;
-let httpRequest3;
-
-$(document).ready(function() {
-    var socket = io.connect('http://' + document.domain + ':' + location.port);
-    
-    //intervalReq = setInterval(getList,2000);
-    getList("devices",httpRequest1);
-    getList("registerQueue",httpRequest2);
-    
-    // $.getJSON('http://Gd.geobytes.com/GetCityDetails?callback=?', function(data) {
-    // console.log(JSON.stringify(data, null, 2));
-    // });
-    
-    $('#publish').click(function(event) {
-      var topic = $('#topic').val();
-      var message = $('#message').val()
-      if(message==="remove"){
-        message = message+' '+$('#optionMessage').val()+" "+$('#object').val();
-      }
-      else{
-        message = message+' '+$('#optionMessage').val();
-      }
-
-      var data = '{"topic": "' + topic + '", "message": "' + message + '"}';
-      //console.log(data);
-      socket.emit('publish', data=data);
-    });
-
-    $('#subscribe').click(function(event) {
-      var topic = $('#subscribe_topic').val();
-      var data = '{"topic": "' + topic + '"}';
-      socket.emit('subscribe', data=data);
-      $('#subscribe').hide();
-      $('#unsubscribe').show();
-      $('#subscribe_topic').prop('readonly', true);
-      $('#subscribe_messages').val('');
-    });
-
-    $('#unsubscribe').click(function(event) {
-      socket.emit('unsubscribe_all');
-      $('#subscribe').show();
-      $('#unsubscribe').hide();
-      //$('#subscribe_topic').prop('readonly', false);
-    });
-
-
-    // register a device
-    $('#register').click(function(event) {
-      var name = $('#regQueue option:selected');
-      var hostname = $('#hostname');
-      var osname = $('#osname');
-      var cpus = $('#cpus');
-      var ipAddr = $('#ipAddr');
-      
-      getList("devices",httpRequest1);
-      var id = $('#deviceNum').val();
-      var data = '{"id": "' + id + '", "ipv4Addr": "' + ipAddr.val() + '", "name": "'+ name.val()
-      + '", "hostname": "'+ hostname.val()+ '", "cpu_count": "'+ cpus.val() 
-      + '", "os_system": "'+ osname.val()+ '"}';
-      getList("removeQueue/"+name.val(),httpRequest3);
-      socket.emit('register', data=data);
-      
-      name.val('');
-      hostname.val('');
-      osname.val('');
-      cpus.val('');
-      ipAddr.val('');
-
-    });
-
-
-    socket.on('mqtt_message', function(data) {
-      var topic = data['topic'];
-      var sub_topic = $('#subscribe_topic').val();
-      
-      if(sub_topic == topic){
-        var text = data['payload'];
-        if(text == "\n"){
-          text = "The command line has a problem. \n"
-        }
-        else{
-
-          text=text.replace(/minutes/gi,"m");
-          text=text.replace(/hours/gi,"h");
-          text=text.replace(/seconds/gi,"s");
-          text=text.replace(/        /gi,"    ");
-
-        }
-        var $textarea = $('#subscribe_messages');
-        $textarea.val($textarea.val() + "=========  The Result =========" + '\n');
-        $textarea.val($textarea.val() + text + '\n');
-    }
-      
-    });
-});
-</script>
-
-
 {% endblock %}
 
 
@@ -155,7 +47,7 @@ $(document).ready(function() {
                 <div class="form-group">
                   <label class="control-label col-xs-4">Device: </label>
                   <div class="col-xs-8">
-                    <select id="pubDevice" class="form-control" onchange=" changeSelect()">
+                    <select id="pubDevice" class="form-control">
                       
                     </select>
                   </div> 
@@ -164,7 +56,7 @@ $(document).ready(function() {
                 <div class="form-group">
                   <label class="control-label col-xs-4">Message: </label>
                   <div class="col-xs-8">
-                    <select id="message" class="form-control" onchange=" changeMsg()">
+                    <select id="message" class="form-control">
                       <option value="status">status</option>
                       <option value="images">images</option>
                       <option value="pull">pull</option>
@@ -266,7 +158,7 @@ $(document).ready(function() {
                   <div class="form-group">
                     <label class="control-label col-xs-4">Waiting Queue: </label>
                     <div class="col-xs-8">
-                      <select id="regQueue" class="form-control" onchange="changeQueueSelect()">
+                      <select id="regQueue" class="form-control">
                         
                       </select>
                     </div> 
@@ -324,8 +216,6 @@ $(document).ready(function() {
 
         <div class="panel-body">
           <div class="col-xs-12">
-
-
 
             <div class="wrap-table100">
               <div class="table" id="deviceTable">
