@@ -1,14 +1,14 @@
 # ochestration_for_docker
 
-•**목적** **:** 엣지 디바이스에의 docker container image 설치를 지원하는 
- 서버 - 클라이언트 어플리케이션 작성 (서버 1종, 클라이언트 1종)
+* **목적** **:** 엣지 디바이스에의 docker container image 설치를 지원하는 
+   서버 - 클라이언트 어플리케이션 작성 (서버 1종, 클라이언트 1종)
 
-•**제약** **:** NAT Traversal issue로부터 자유로울 것
+* **제약** **:** NAT Traversal issue로부터 자유로울 것
 
-•**방법** **:** MQTT + Flask socket io 사용
+* **방법** **:** MQTT + Flask socket io 사용
 
 
- 
+
    **클라이언트** **-** **서버** **프로로콜** **상세**
 
 1. 클라이언트는 엣지 노드에서 실행시 MQTT Topic에 자기 자신 등록
